@@ -29,7 +29,7 @@ function rattle:draw()
     local x, y, z = controller:getPosition()
     local angle, ax, ay, az = controller:getOrientation()
     lovr.graphics.setColor(255, 255, 255)
-    lovr.graphics.cube('line', x, y, z, .2 + self.shake, -angle, ax, ay, az)
+    lovr.graphics.cube('line', x, y, z, .2 + self.shake * 5, -angle, ax, ay, az)
   end
 end
 
