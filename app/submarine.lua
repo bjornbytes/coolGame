@@ -20,7 +20,7 @@ function submarine:update(dt)
     self.periscope.grabbed = dist < self.periscope.size and controller:getAxis('trigger') > .5
 
     if self.periscope.grabbed then
-      self.periscope.pos.y = _.clamp(y, 1.5, 2.5)
+      self.periscope.pos.y = _.lerp(self.periscope.pos.y, _.clamp(y, 1.5, 2.5), math.min(20 * dt, 1))
     end
   end
 end

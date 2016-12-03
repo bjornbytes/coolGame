@@ -9,6 +9,7 @@ end
 
 function sea:update(dt)
   rattle:update(dt)
+  submarine:update(dt)
 end
 
 function sea:draw()
