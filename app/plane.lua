@@ -5,6 +5,7 @@ local veggie = require 'app/veggie'
 local vec3 = require('lib/cpml').vec3
 
 function plane:init()
+  self.environment = lovr.graphics.newModel('art/roomTest.obj')
   rattle:init()
   self.veggies = {}
   self:spawnVeggie()
@@ -17,9 +18,15 @@ end
 
 function plane:draw()
   lovr.graphics.setBackgroundColor(50, 250, 250)
-  self:drawCockpit()
+  self:drawEnvironment()
+  -- self:drawCockpit()
   rattle:draw()
   _.each(self.veggies, 'draw')
+end
+
+function plane:drawEnvironment()
+  lovr.graphics.setWireframe(true)
+  self.environment:draw(0, 1, 0, .01)
 end
 
 function plane:drawCockpit()
