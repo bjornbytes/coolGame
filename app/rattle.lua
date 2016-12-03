@@ -1,5 +1,6 @@
 local rattle = {}
-local vec3 = require 'lib.cpml.vec3'
+local controllers = require 'app/controllers'
+local vec3 = require('lib/cpml').vec3
 
 function rattle:init()
   self.lastPosition = {}
@@ -7,10 +8,10 @@ function rattle:init()
 end
 
 function rattle:update(dt)
-  print(self.controller)
-  if self.controller then
-    local pos = vec3(self.controller:getPosition())
-    print(pos)
+  local controller = controllers.list[1]
+
+  if controller then
+    local pos = vec3(controller:getPosition())
 
     if self.lastPosition then
       local delta = pos - self.lastPosition
@@ -19,17 +20,18 @@ function rattle:update(dt)
     else
       self.lastPosition = pos
     end
-  elseif controllers.list[1] then
-    self:setController(controllers.list[1])
   end
 end
 
 function rattle:draw()
-  --
-end
+  local controller = controllers.list[1]
 
-function rattle:setController(controller)
-  self.controller = controller
+  if controller then
+    local x, y, z = controller:getPosition()
+    local angle, ax, ay, az = controller:getOrientation()
+    lovr.graphics.setColor(255, 255, 255)
+    lovr.graphics.cube('line', x, y, z, .2, -angle, ax, ay, az)
+  end
 end
 
 return rattle
