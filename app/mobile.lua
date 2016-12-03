@@ -4,6 +4,8 @@ function mobile:init()
   self.angle = 3 * math.pi / 180
   self.size = .5
   self.numToys = 4
+  self.rotateSpeed = .5
+
   self.toySize = self.size / 4
   self.toyRotate = 2 * math.pi / self.numToys
   self.toyTranslateZ = self.size / 2
@@ -29,16 +31,22 @@ end
 
 function mobile:draw()
   lovr.graphics.setWireframe(false)
-  local toy = nil
-  local toyRotate = self.toyRotate
-  local toyTranslate = self.toyTranslateZ
-  local toySize = self.toySize
 
   lovr.graphics.setColor(255, 255, 255)
   lovr.graphics.push()
   lovr.graphics.translate(0, 2, 1)
   lovr.graphics.rotate(self.angle, 0, 1, 0)
   lovr.graphics.cube('fill', 0, 0, 0, self.size)
+  self:drawToys()
+  lovr.graphics.pop()
+end
+
+function mobile:drawToys()
+  local toy = nil
+  local toyRotate = self.toyRotate
+  local toyTranslate = self.toyTranslateZ
+  local toySize = self.toySize
+
   for k,v in pairs(self.toys) do
     toy = v
     lovr.graphics.push()
@@ -49,11 +57,19 @@ function mobile:draw()
     toyRotate = toyRotate + self.toyRotate
     lovr.graphics.pop()
   end
-  lovr.graphics.pop()
 end
 
-function mobile:drawToys()
+function mobile:speed(controllerPos)
+  local center = vec3(0, 1, -2)
+  local delta = contollerPos - center
+  local l = delta:len()
+  local radius = self.size / 2
 
+  if (l < radius) then
+    self.rotateSpeed = .05
+  else
+    self.rotateSpeed = .5
+  end
 end
 
 return mobile

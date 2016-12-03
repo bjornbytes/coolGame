@@ -13,6 +13,12 @@ end
 function menu:update(dt)
   rattle:update(dt)
   mobile:update(dt)
+
+  local controller = controllers.list[1]
+  if controller then
+    local pos = vec3(controller:getPosition())
+    mobile:speed(pos)
+  end
 end
 
 function menu:draw()
