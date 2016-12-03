@@ -1,15 +1,16 @@
 local submarine = {}
 local vec3 = require('lib/cpml').vec3
-local quat = require('lib/cpml').quat
 
 function submarine:init()
-  self.direction = { 0, 0, 0, 0 }
   self.position = vec3.zero
+  self.floor = lovr.graphics.newBuffer(lovr.headset.getBoundsGeometry())
 end
 
-function submarine:update(dt)
-  self.direction = quat.from_angle_axis(lovr.headset.getOrientation()) * vec3(0, 0, -1)
-  self.position = self.position + self.direction * dt
+function submarine:draw()
+  lovr.graphics.push()
+  lovr.graphics.translate(self.position:unpack())
+  self.floor:draw()
+  lovr.graphics.pop()
 end
 
 return submarine
