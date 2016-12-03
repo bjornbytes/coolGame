@@ -1,5 +1,6 @@
 _ = require 'lib.lume'
 local artichoke = require 'app/artichoke'
+local sea = require 'app/sea'
 local mobile = require 'app/mobile'
 local menu = require 'app/menu'
 local controllers = require 'app/controllers'
