@@ -1,44 +1,55 @@
 local mobile = {}
 
--- local x1, y1, z1 = -1, 1, -5
--- local x2, y2, z2 = 0, 1, -5
--- local x3, y3, z3 = 1, 1, -5
-local angle = 3 * math.pi / 180
-
-
 function mobile:init()
+  self.angle = 3 * math.pi / 180
+  self.size = .5
+  self.numToys = 4
+  self.toySize = self.size / 4
+  self.toyRotate = 2 * math.pi / self.numToys
+  self.toyTranslateZ = self.size / 2
   self.toys = {
     submarine = {
-      x = 0,
-      y = 1,
-      z = -2,
       color = { 200, 0, 0 }
+    },
+    plane = {
+      color = { 200, 200, 0 }
+    },
+    train = {
+      color = { 0, 200, 200 }
+    },
+    rocketship = {
+      color = { 200, 0, 200 }
     }
   }
-  t = 0
 end
 
 function mobile:update(dt)
-  t = t + dt
-  angle = angle + .2 * math.pi / 180
+  self.angle = self.angle + .05 * math.pi / 180
 end
 
 function mobile:draw()
   lovr.graphics.setWireframe(false)
+  local toy = nil
+  local toyRotate = self.toyRotate
+  local toyTranslate = self.toyTranslateZ
+  local toySize = self.toySize
 
-  local size = 1 -- meter
   lovr.graphics.setColor(255, 255, 255)
-  lovr.graphics.cube('fill', 0, 1, -2, size / 2, .5 + t / 2, 0, 1, 0)
-
-  toy = self.toys.submarine
-  toy.x = 0 + math.cos(angle)*.3;
-  toy.z = -2 + math.sin(angle)*.3;
-  lovr.graphics.setColor(unpack(toy.color))
-  lovr.graphics.cube('fill', toy.x, toy.y, toy.z, size / 5, .5 + t / 2, 0, 1, 0)
-
-
-  -- lovr.graphics.setColor(255, 155, 155)
-  -- lovr.graphics.triangle('fill', x1, y1, z1, x2, y2, z2, x3, y3, z3)
+  lovr.graphics.push()
+  lovr.graphics.translate(0, 1, 2)
+  lovr.graphics.rotate(self.angle, 0, 1, 0)
+  lovr.graphics.cube('fill', 0, 0, 0, self.size)
+  for k,v in pairs(self.toys) do
+    toy = v
+    lovr.graphics.push()
+    lovr.graphics.setColor(unpack(toy.color))
+    lovr.graphics.rotate(toyRotate, 0, 1, 0)
+    lovr.graphics.translate(0, -.4, toyTranslate)
+    lovr.graphics.cube('fill', 0, 0, 0, toySize)
+    toyRotate = toyRotate + self.toyRotate
+    lovr.graphics.pop()
+  end
+  lovr.graphics.pop()
 end
 
 function mobile:drawToys()
