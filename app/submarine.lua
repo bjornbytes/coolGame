@@ -8,20 +8,17 @@ function submarine:init()
   self.periscope = {}
   self.periscope.pos = vec3(0, 2.5, -1)
   self.periscope.size = .2
-  self.periscope.grabbed = false
 end
 
 function submarine:update(dt)
   local controller = controllers.list[1]
   if controller then
     local x, y, z = controller:getPosition()
+    local trigger = controller:getAxis('trigger')
     local dist = self.periscope.pos:dist(vec3(x, y, z))
-
-    self.periscope.grabbed = dist < self.periscope.size and controller:getAxis('trigger') > .5
-
-    if self.periscope.grabbed then
-      self.periscope.pos.y = _.lerp(self.periscope.pos.y, _.clamp(y, 1.5, 2.5), math.min(20 * dt, 1))
-    end
+    local isGrabbed = dist < self.periscope.size and trigger > .8
+    local targetY = isGrabbed and _.clamp(y, 1.5, 2.5) or 2.5
+    self.periscope.pos.y = _.lerp(self.periscope.pos.y, targetY, math.min(20 * dt, 1))
   end
 end
 
