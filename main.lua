@@ -4,6 +4,7 @@ local controllers = require 'app/controllers'
 local state = artichoke
 
 function lovr.load()
+  lovr.graphics.setCullingEnabled(true)
   controllers:init()
   state:init()
 end
