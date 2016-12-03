@@ -1,7 +1,7 @@
 _ = require 'lib.lume'
-local plane = require 'app/plane'
+local artichoke = require 'app/artichoke'
 local controllers = require 'app/controllers'
-local state = plane
+local state = artichoke
 
 function lovr.load()
   controllers:init()
