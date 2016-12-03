@@ -15,7 +15,7 @@ function rattle:update(dt)
 
     if self.lastPosition then
       local delta = pos - self.lastPosition
-      self.shake = _.lerp(self.shake, delta:len(), 10 * dt)
+      self.shake = _.lerp(self.shake, delta:len() * 2, 6 * dt)
     end
 
     self.lastPosition = pos
