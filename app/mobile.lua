@@ -24,7 +24,7 @@ function mobile:init()
 end
 
 function mobile:update(dt)
-  self.angle = self.angle + .05 * math.pi / 180
+  self.angle = self.angle + dt * .5
 end
 
 function mobile:draw()
@@ -36,7 +36,7 @@ function mobile:draw()
 
   lovr.graphics.setColor(255, 255, 255)
   lovr.graphics.push()
-  lovr.graphics.translate(0, 1, 2)
+  lovr.graphics.translate(0, 2, 1)
   lovr.graphics.rotate(self.angle, 0, 1, 0)
   lovr.graphics.cube('fill', 0, 0, 0, self.size)
   for k,v in pairs(self.toys) do
