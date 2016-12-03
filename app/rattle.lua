@@ -16,7 +16,9 @@ function rattle:update(dt)
     if self.lastPosition then
       local delta = pos - self.lastPosition
       self.shake = _.lerp(self.shake, delta:len() * 2, 6 * dt)
-      controller:vibrate(math.min(.002 * self.shake, .0039))
+      if self.shake > .03 then
+        controller:vibrate(math.min((self.shake - .03) / 15, .003))
+      end
     end
 
     self.lastPosition = pos
