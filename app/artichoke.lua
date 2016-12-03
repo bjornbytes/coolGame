@@ -8,12 +8,24 @@ function artichoke:init()
   self.environment = lovr.graphics.newModel('art/roomTest.obj')
   rattle:init()
   self.veggies = {}
-  self:spawnVeggie()
+  self.veggieTimer = 1
 end
 
 function artichoke:update(dt)
   rattle:update(dt)
   _.each(self.veggies, 'update', dt)
+
+  self.veggieTimer = self.veggieTimer - dt
+  if self.veggieTimer <= 0 then
+    self:spawnVeggie()
+    self.veggieTimer = _.random(1, 2)
+  end
+
+  _.each(self.veggies, function(veggie)
+    if veggie.position.y < -.5 then
+      self:removeVeggie(veggie)
+    end
+  end)
 end
 
 function artichoke:draw()
@@ -29,9 +41,13 @@ function artichoke:drawEnvironment()
 end
 
 function artichoke:spawnVeggie()
-  local veggiePosition = vec3(0, 3, -5)
+  local veggiePosition = vec3(_.random(-1, 1), _.random(.5, 2), _.random(-5, -4))
   local veggie = veggie.grow(veggiePosition)
-  table.insert(self.veggies, veggie)
+  self.veggies[veggie] = veggie
+end
+
+function artichoke:removeVeggie(veggie)
+  self.veggies[veggie] = nil
 end
 
 return artichoke
