@@ -1,3 +1,4 @@
+_ = require 'lib.lume'
 local plane = require 'app/plane'
 local controllers = require 'app/controllers'
 local state = plane

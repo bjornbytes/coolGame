@@ -2,11 +2,11 @@ local plane = {}
 local controllers = require 'app/controllers'
 
 function plane:init()
-
+  --
 end
 
 function plane:update(dt)
-
+  --
 end
 
 function plane:draw()
