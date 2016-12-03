@@ -1,7 +1,8 @@
 _ = require 'lib.lume'
 local artichoke = require 'app/artichoke'
+local mobile = require 'app/mobile'
 local controllers = require 'app/controllers'
-local state = artichoke
+local state = mobile
 
 function lovr.load()
   lovr.graphics.setCullingEnabled(true)
