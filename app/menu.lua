@@ -5,7 +5,8 @@ local mobile = require 'app/mobile'
 local vec3 = require('lib/cpml').vec3
 
 function menu:init()
-  self.environment = lovr.graphics.newModel('art/roomTest.obj')
+  self.room = lovr.graphics.newModel('art/room.obj')
+  self.crib = lovr.graphics.newModel('art/crib.obj')
   rattle:init()
   mobile:init()
 end
@@ -13,12 +14,6 @@ end
 function menu:update(dt)
   rattle:update(dt)
   mobile:update(dt)
-
-  local controller = controllers.list[1]
-  if controller then
-    local pos = vec3(controller:getPosition())
-    mobile:speed(pos)
-  end
 end
 
 function menu:draw()
@@ -30,7 +25,8 @@ end
 
 function menu:drawEnvironment()
   lovr.graphics.setWireframe(true)
-  self.environment:draw(0, 1, 0, .01)
+  self.room:draw(0, 1, 0, .01)
+  self.crib:draw(0, 1, 0, .01)
 end
 
 return menu

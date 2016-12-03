@@ -1,3 +1,6 @@
+local controllers = require 'app/controllers'
+local vec3 = require('lib/cpml').vec3
+
 local mobile = {}
 
 function mobile:init()
@@ -26,7 +29,13 @@ function mobile:init()
 end
 
 function mobile:update(dt)
-  self.angle = self.angle + dt * .5
+  self.angle = self.angle + dt * self.rotateSpeed
+
+  local controller = controllers.list[1]
+  if controller then
+    local pos = vec3(controller:getPosition())
+    mobile:speed(dt, pos)
+  end
 end
 
 function mobile:draw()
@@ -59,16 +68,16 @@ function mobile:drawToys()
   end
 end
 
-function mobile:speed(controllerPos)
-  local center = vec3(0, 1, -2)
-  local delta = contollerPos - center
-  local l = delta:len()
-  local radius = self.size / 2
+function mobile:speed(dt)
+  local controller = controllers.list[1]
+  if controller then
+    local pos = vec3(controller:getPosition())
+    local center = vec3(0, 2, 1)
+    local delta = controllerPos - center
+    local l = delta:len()
+    local radius = self.size
 
-  if (l < radius) then
-    self.rotateSpeed = .05
-  else
-    self.rotateSpeed = .5
+    self.rotateSpeed = _.lerp(self.rotateSpeed, l < radius and 0 or .5, 2 * dt)
   end
 end
 
