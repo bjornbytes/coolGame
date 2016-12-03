@@ -16,7 +16,7 @@ function rattle:update(dt)
     if self.lastPosition then
       local delta = pos - self.lastPosition
       self.shake = _.lerp(self.shake, delta:len() * 2, 6 * dt)
-      controller:vibrate(.002 * self.shake)
+      controller:vibrate(math.min(.002 * self.shake, .0039))
     end
 
     self.lastPosition = pos
@@ -30,7 +30,7 @@ function rattle:draw()
     local x, y, z = controller:getPosition()
     local angle, ax, ay, az = controller:getOrientation()
     lovr.graphics.setColor(255, 255, 255)
-    lovr.graphics.cube('line', x, y, z, .2 + self.shake * 5, -angle, ax, ay, az)
+    lovr.graphics.cube('line', x, y, z, .1 + self.shake * 4, -angle, ax, ay, az)
   end
 end
 
