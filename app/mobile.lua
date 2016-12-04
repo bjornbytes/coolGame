@@ -40,7 +40,7 @@ function mobile:init()
       position = { 0, self.position[2], 0 },
       isEntered = false,
       angle = 0,
-      model = lovr.graphics.newModel('art/mobile_submarine.obj'),
+      model = lovr.graphics.newModel('art/mobile_balloon.obj'),
       color = { 0, 200, 200 },
       target = sleep
     }
