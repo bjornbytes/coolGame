@@ -27,7 +27,7 @@ function submarine:update(dt)
         self.periscope.pos.y = _.lerp(self.periscope.pos.y, targetY, math.min(20 * dt, 1))
       end
     else
-      if dist < size and trigger > deadzone then
+      if dist < self.periscope.size and trigger > deadzone then
         self.periscope.grabbed = true
       end
     end
