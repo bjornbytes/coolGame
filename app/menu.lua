@@ -6,7 +6,9 @@ local vec3 = require('lib/cpml').vec3
 
 function menu:init()
   self.room = lovr.graphics.newModel('art/room.obj')
+  self.room:setTexture(g.newTexture('art/room_DIFF.png'))
   self.crib = lovr.graphics.newModel('art/crib.obj')
+  self.crib:setTexture(g.newTexture('art/crib_DIFF.png'))
   rattle:init()
   mobile:init()
 end
@@ -24,10 +26,8 @@ function menu:draw()
 end
 
 function menu:drawEnvironment()
-  lovr.graphics.setWireframe(true)
-  self.room:draw(0, 1, 0, .01)
-  lovr.graphics.setWireframe(false)
   lovr.graphics.setColor(255, 255, 255)
+  self.room:draw(0, 1, 0, .01)
   self.crib:draw(0, 1, 0, .01)
 end
 
