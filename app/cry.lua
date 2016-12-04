@@ -19,7 +19,7 @@ function cry:init()
   self.floor = g.newBuffer(lovr.headset.getBoundsGeometry())
 
   self.block = {}
-  self.block.position = vec3(0, 0, -8)
+  self.block.position = vec3(0, 1, -4)
   self.block.size = .2
 
   self.transitionFactor = 0
@@ -30,19 +30,21 @@ end
 function cry:update(dt)
   rattle:update(dt)
 
+  self.block.position.x = math.sin(lovr.timer.getTime()) * self.block.position.z / 5
+
   if rattle.isShaking then
     local blockDirection = self.block.position - vec3(lovr.headset.getPosition())
     local a, rx, ry, rz = lovr.headset.getOrientation()
     local playerDirection = quat.from_angle_axis(a, vec3(rx, ry, rz)) * vec3.unit_z
     local factor = vec3.dot(blockDirection, playerDirection)
-    self.block.position.z = self.block.position.z + factor * dt * 2
+    self.block.position.z = _.clamp(self.block.position.z + factor * dt * .5, -5, .2)
   end
 
   -- Win
   local controller = controllers.list[1]
   local trigger = controller and controller:getAxis('trigger')
   local dist = controller and vec3(controller:getPosition()):dist(self.block.position) or math.huge
-  if controller and trigger < .9 and dist < self.block.size / 2 then
+  if controller and trigger > .9 and dist < self.block.size then
     self.transitionFactor = math.min(self.transitionFactor + dt, 1)
 
     if self.transitionFactor > 0 then

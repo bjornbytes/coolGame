@@ -23,9 +23,9 @@ function rattle:update(dt)
       if self.lastVelocity then
         local acceleration = (velocity - self.lastVelocity):len()
         self.shake = _.lerp(self.shake, acceleration, math.min(16 * dt, 1))
-        self.isShaking = self.shake > .035
+        self.isShaking = self.shake > .005
         if self.isShaking then
-          controller:vibrate(math.min((self.shake - .035) / 10, .0035))
+          controller:vibrate(math.min((self.shake - .005) / 4, .0035))
         end
       end
 
@@ -38,7 +38,7 @@ end
 
 function rattle:draw()
   local controller = controllers.list[1]
-  local levels = { require('app/cry'), require('app/sleep'), require('app/play') }
+  local levels = { require('app/cry'), require('app/sleep') }
 
   if controller then
     local x, y, z = controller:getPosition()
