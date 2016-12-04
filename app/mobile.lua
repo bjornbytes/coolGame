@@ -33,7 +33,22 @@ end
 function mobile:update(dt)
   self.angle = self.angle + dt * self.rotateSpeed
   self:speed(dt)
-  self:handleToys(dt)
+
+  local toyRotate = self.toyRotate
+  _.each(self.toys, function(toy)
+
+    -- Translate to parent
+    local m = mat4.identity()
+    m:translate(m, vec3(unpack(self.position)))
+    m:rotate(m, self.angle, vec3(0, 1, 0))
+
+    -- Shoot outwards from parent
+    m:rotate(m, toyRotate, vec3(0, 1, 0))
+    m:translate(m, vec3(0, -.4, self.toyTranslateZ))
+
+    toy.position = { m[13], m[14], m[15] }
+    toyRotate = toyRotate + self.toyRotate
+  end)
 end
 
 function mobile:draw()
@@ -44,37 +59,19 @@ function mobile:draw()
   lovr.graphics.translate(unpack(self.position))
   lovr.graphics.rotate(self.angle, 0, 1, 0)
   lovr.graphics.cube('fill', 0, 0, 0, self.size)
-  self:drawToys()
   lovr.graphics.pop()
 
-  local testPos = unpack(self.toys.submarine.position)
-  lovr.graphics.setColor(0, 0, 0)
-  lovr.graphics.cube('fill', testPos, toySize + .1)
+  self:drawToys()
 end
 
 function mobile:drawToys()
-  local toyRotate = self.toyRotate
-  local toyTranslate = self.toyTranslateZ
   local toySize = self.toySize
 
-  for k,v in pairs(self.toys) do
-    local m = mat4.identity()
-    m:translate(m, vec3(unpack(self.position)))
-    m:rotate(m, self.angle, 0, 1, 0)
-
-    local toy = v
-    lovr.graphics.push()
+  _.each(self.toys, function(toy)
+    local x, y, z = unpack(toy.position)
     lovr.graphics.setColor(unpack(toy.color))
-    lovr.graphics.rotate(toyRotate, 0, 1, 0)
-    m:rotate(m, toyRotate, 0, 1, 0)
-    lovr.graphics.translate(0, -.4, toyTranslate)
-    m:translate(m, 0, -.4, toyTranslate)
-    lovr.graphics.cube('fill', 0, 0, 0, toySize)
-
-    toy.position = { m[13], m[14], m[15] }
-    toyRotate = toyRotate + self.toyRotate
-    lovr.graphics.pop()
-  end
+    lovr.graphics.cube('fill', x, y, z, toySize)
+  end)
 end
 
 function mobile.controllerInRange(self, basePos, size)

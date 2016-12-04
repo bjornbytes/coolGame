@@ -5,7 +5,7 @@ local sea = require 'app/sea'
 local mobile = require 'app/mobile'
 local menu = require 'app/menu'
 local controllers = require 'app/controllers'
-local state = sea
+local state = menu
 
 function lovr.load()
   lovr.graphics.setCullingEnabled(true)
