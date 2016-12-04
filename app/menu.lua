@@ -26,6 +26,8 @@ end
 function menu:drawEnvironment()
   lovr.graphics.setWireframe(true)
   self.room:draw(0, 1, 0, .01)
+  lovr.graphics.setWireframe(false)
+  lovr.graphics.setColor(255, 255, 255)
   self.crib:draw(0, 1, 0, .01)
 end
 
