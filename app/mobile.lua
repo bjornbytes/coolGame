@@ -1,5 +1,5 @@
 local controllers = require 'app/controllers'
-local sea = require 'app/sea'
+local cry = require 'app/cry'
 local vec3 = require('lib/cpml').vec3
 local mat4 = require('lib/cpml').mat4
 
@@ -25,7 +25,7 @@ function mobile:init()
       angle = 0,
       model = lovr.graphics.newModel('art/mobile_submarine.obj'),
       color = { 200, 0, 0 },
-      target = sea
+      target = cry
     },
     plane = {
       scale = .5,
@@ -34,7 +34,7 @@ function mobile:init()
       angle = 0,
       model = lovr.graphics.newModel('art/mobile_submarine.obj'),
       color = { 200, 200, 0 },
-      target = sea
+      target = cry
     },
     train = {
       scale = .5,
@@ -43,7 +43,7 @@ function mobile:init()
       angle = 0,
       model = lovr.graphics.newModel('art/mobile_submarine.obj'),
       color = { 0, 200, 200 },
-      target = sea
+      target = cry
     },
     rocketship = {
       scale = .5,
@@ -52,7 +52,7 @@ function mobile:init()
       angle = 0,
       model = lovr.graphics.newModel('art/mobile_submarine.obj'),
       color = { 200, 0, 200 },
-      target = sea
+      target = cry
     }
   }
 

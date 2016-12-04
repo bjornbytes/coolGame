@@ -1,17 +1,16 @@
 _ = require 'lib.lume'
 g = lovr.graphics
-local sea = require 'app/sea'
+local cry = require 'app/cry'
 local sleep = require 'app/sleep'
 local menu = require 'app/menu'
 local controllers = require 'app/controllers'
 local state = sleep
 
 function lovr.load()
-  -- lovr.graphics.setCullingEnabled(true)
   controllers:init()
   menu:init()
+  cry:init()
   sleep:init()
-  sea:init()
 end
 
 function lovr.update(dt)

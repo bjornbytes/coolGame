@@ -1,17 +1,10 @@
-local sea = {}
+local cry = {}
 local rattle = require 'app/rattle'
 local controllers = require 'app/controllers'
 local submarine = require 'app/submarine'
 
-function sea:init()
+function cry:init()
   self.skybox = g.newSkybox(
-    -- 'art/skyboxes/seaSide.png',
-    -- 'art/skyboxes/seaSide.png',
-    -- 'art/skyboxes/seaCeiling.png',
-    -- 'art/skyboxes/seaFloor.png',
-    -- 'art/skyboxes/seaSide.png',
-    -- 'art/skyboxes/seaSide.png'
-
     'art/skyboxes/sea_rt.jpg',
     'art/skyboxes/sea_lf.jpg',
     'art/skyboxes/sea_up.jpg',
@@ -19,27 +12,36 @@ function sea:init()
     'art/skyboxes/sea_bk.jpg',
     'art/skyboxes/sea_ft.jpg'
   )
+
+  self.floor = g.newBuffer(lovr.headset.getBoundsGeometry())
+
+  self.block = {}
+  self.block.position = vec3(0, 0, -8)
+  self.block.size = .2
+
   self.transitionFactor = 0
 
-  self.transitionFactor = 1
-
-  submarine:init()
   rattle:init()
 end
 
-function sea:update(dt)
+function cry:update(dt)
   rattle:update(dt)
-  submarine:update(dt)
 
+  --
+
+  -- Win
   local controller = controllers.list[1]
-  if controller and controller:isDown('system') then
+  local trigger = controller and controller:getAxis('trigger')
+  local dist = controller and vec3(controller:getPosition()):dist(self.block.position) or math.huge
+  if controller and trigger < .9 and dist < self.block.size / 2 then
     self.transitionFactor = math.min(self.transitionFactor + dt, 1)
 
-     if self.transitionFactor > 0 then
-      controller:vibrate(self.transitionFactor^2 * .0035)
+    if self.transitionFactor > 0 then
+     controller:vibrate(self.transitionFactor^2 * .0035)
     end
 
     if self.transitionFactor >= 1 then
+      -- YOU WIN
       local menu = require 'app/menu'
       setState(menu)
     end
@@ -48,15 +50,21 @@ function sea:update(dt)
   end
 end
 
-function sea:draw()
+function cry:draw()
   local a, rx, ry, rz = lovr.headset.getOrientation()
   g.setColor(255, 255, 255)
   self.skybox:draw(a, rx, ry, rz)
 
-  submarine:draw()
   rattle:draw()
+
+  g.setColor(255, 255, 255, 80)
+  self.floor:draw()
+
+  local x, y, z = self.block.position:unpack()
+  g.setColor(128, 0, 255)
+  g.cube('fill', x, y, z, self.block.size)
 
   drawTransition(self.transitionFactor)
 end
 
-return sea
+return cry

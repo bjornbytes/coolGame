@@ -21,10 +21,14 @@ function sleep:init()
   self.block.size = .2
 
   self.transitionFactor = 0
+
+  rattle:init()
 end
 
 function sleep:update(dt)
   rattle:update(dt)
+
+  -- Logic
   if rattle.isShaking then
     local shake = _.clamp((rattle.shake - .035) * 5, 0, 1)
     local x, y, z = lovr.headset.getPosition()
@@ -34,6 +38,7 @@ function sleep:update(dt)
     self.block.position.y = math.min(self.block.position.y + dt * .2, self.block.maxY)
   end
 
+  -- Win
   local controller = controllers.list[1]
   local trigger = controller and controller:getAxis('trigger')
   local dist = controller and vec3(controller:getPosition()):dist(self.block.position)
@@ -67,6 +72,8 @@ function sleep:draw()
   local x, y, z = self.block.position:unpack()
   g.setColor(128, 0, 255)
   g.cube('fill', x, y, z, self.block.size)
+
+  drawTransition(self.transitionFactor)
 end
 
 return sleep
