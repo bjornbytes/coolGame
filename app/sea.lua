@@ -6,8 +6,8 @@ function sea:init()
   self.skybox = g.newSkybox(
     'art/skyboxes/seaSide.png',
     'art/skyboxes/seaSide.png',
-    'art/skyboxes/seaFloor.png',
     'art/skyboxes/seaCeiling.png',
+    'art/skyboxes/seaFloor.png',
     'art/skyboxes/seaSide.png',
     'art/skyboxes/seaSide.png'
   )
@@ -24,7 +24,8 @@ end
 
 function sea:draw()
   local a, rx, ry, rz = lovr.headset.getOrientation()
-  self.skybox:draw(-a, rx, ry, rz)
+  g.setColor(255, 255, 255)
+  self.skybox:draw(a, rx, ry, rz)
 
   submarine:draw()
   rattle:draw()
