@@ -38,17 +38,18 @@ function submarine:update(dt)
 end
 
 function submarine:draw()
-  lovr.graphics.push()
-  lovr.graphics.translate(self.position:unpack())
+  g.push()
+  g.translate(self.position:unpack())
 
   -- Floor
+  g.setColor(0, 0, 0)
   self.floor:draw()
 
   -- Periscope
   local x, y, z = self.periscope.pos:unpack()
-  lovr.graphics.cube('fill', x, y, z, self.periscope.size)
+  g.cube('fill', x, y, z, self.periscope.size)
 
-  lovr.graphics.pop()
+  g.pop()
 end
 
 return submarine

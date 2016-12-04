@@ -1,4 +1,5 @@
 _ = require 'lib.lume'
+g = lovr.graphics
 local artichoke = require 'app/artichoke'
 local sea = require 'app/sea'
 local mobile = require 'app/mobile'
