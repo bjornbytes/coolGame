@@ -2,12 +2,15 @@ local submarine = {}
 local controllers = require('app/controllers')
 local vec3 = require('lib/cpml').vec3
 
+local deadzone = .8
+
 function submarine:init()
   self.position = vec3.zero
   self.floor = lovr.graphics.newBuffer(lovr.headset.getBoundsGeometry())
   self.periscope = {}
   self.periscope.pos = vec3(0, 2.5, -1)
   self.periscope.size = .2
+  self.periscope.grabbed = false
 end
 
 function submarine:update(dt)
@@ -16,10 +19,18 @@ function submarine:update(dt)
     local x, y, z = controller:getPosition()
     local trigger = controller:getAxis('trigger')
     local dist = self.periscope.pos:dist(vec3(x, y, z))
-    local isGrabbed = dist < self.periscope.size and trigger > .8
-    local targetY = isGrabbed and _.clamp(y, 1.5, 2.5) or 2.5
-    local factor = (isGrabbed and 20 or 5) * dt
-    self.periscope.pos.y = _.lerp(self.periscope.pos.y, targetY, math.min(factor, 1))
+    if self.periscope.isGrabbed then
+      if trigger < deadzone or dist > 1 then
+        self.periscope.isGrabbed = false
+      else
+        local targetY = _.clamp(y, 1.5, 2.5)
+        self.periscope.pos.y = _.lerp(self.periscope.pos.y, targetY, math.min(20 * dt, 1))
+      end
+    else
+      if dist < size and trigger > deadzone then
+        self.periscope.grabbed = true
+      end
+    end
   end
 end
 
