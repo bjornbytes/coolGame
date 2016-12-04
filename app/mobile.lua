@@ -147,15 +147,16 @@ function mobile:handleToyInput(dt)
 
   if activeToy and trigger > .9 then
     self.transitionFactor = math.min(self.transitionFactor + dt, 1)
+
+    if self.transitionFactor > 0 then
+      controller:vibrate(self.transitionFactor^2 * .0035)
+    end
+
     if self.transitionFactor >= 1 then
       setState(activeToy.target)
     end
   else
     self.transitionFactor = math.max(self.transitionFactor - dt, 0)
-  end
-
-  if self.transitionFactor > 0 then
-    controller:vibrate(self.transitionFactor^2 * .0035)
   end
 
   self.isEntered = activeToy ~= nil

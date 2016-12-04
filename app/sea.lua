@@ -34,6 +34,11 @@ function sea:update(dt)
   local controller = controllers.list[1]
   if controller and controller:isDown('system') then
     self.transitionFactor = math.min(self.transitionFactor + dt, 1)
+
+     if self.transitionFactor > 0 then
+      controller:vibrate(self.transitionFactor^2 * .0035)
+    end
+
     if self.transitionFactor >= 1 then
       local menu = require 'app/menu'
       setState(menu)
