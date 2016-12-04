@@ -18,15 +18,31 @@ function mobile:init()
   self.toyTranslateZ = self.size / 2
   self.toys = {
     submarine = {
+      scale = 1,
+      position = { 0, 0, 0 },
+      isEntered = false,
+      angle = 0,
       color = { 200, 0, 0 }
     },
     plane = {
+      scale = 1,
+      position = { 0, 0, 0 },
+      isEntered = false,
+      angle = 0,
       color = { 200, 200, 0 }
     },
     train = {
+      scale = 1,
+      position = { 0, 0, 0 },
+      isEntered = false,
+      angle = 0,
       color = { 0, 200, 200 }
     },
     rocketship = {
+      scale = 1,
+      position = { 0, 0, 0 },
+      isEntered = false,
+      angle = 0,
       color = { 200, 0, 200 }
     }
   }
@@ -35,6 +51,7 @@ end
 function mobile:update(dt)
   self.angle = self.angle + dt * self.rotateSpeed
   self:handMobileInput(dt)
+  self:handleToyInput(dt)
 
   local toyRotate = self.toyRotate
   _.each(self.toys, function(toy)
@@ -72,7 +89,7 @@ function mobile:drawToys()
   _.each(self.toys, function(toy)
     local x, y, z = unpack(toy.position)
     lovr.graphics.setColor(unpack(toy.color))
-    lovr.graphics.cube('fill', x, y, z, toySize)
+    lovr.graphics.cube('fill', x, y, z, toySize * toy.scale, toy.angle, 0, 1, 0)
   end)
 end
 
@@ -98,8 +115,25 @@ function mobile:handMobileInput(dt)
   if not wasEntered and self.isEntered then controller:vibrate(.003) end
 end
 
-function handleToyInput()
+function mobile:handleToyInput(dt)
+  local controller = controllers.list[1]
+  if not controller then return end
 
+  _.each(self.toys, function(toy)
+    toy.isEntered = toy.controllerInRange(toy.position, self.toySize)
+    if toy.isEntered then
+      -- lerp scale
+      toy.scale = _.lerp(toy.scale, 1.2, 8 * dt)
+      -- vibrate
+      controller:vibrate((math.sin(lovr.timer.getTime() * 4) / 2 + .5) * .0035)
+      -- spin
+      toy.angle = toy.angle + dt
+      -- glow
+      -- play sound effect
+    else
+      toy.scale = _.lerp(toy.scale, 1, 8 * dt)
+    end
+  end)
 end
 
 return mobile
