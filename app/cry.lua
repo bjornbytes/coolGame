@@ -48,7 +48,7 @@ function cry:update(dt)
     end
 
     if self.transitionFactor >= 1 then
-      -- YOU WIN
+      won.cry = true
       local menu = require 'app/menu'
       setState(menu)
     end
