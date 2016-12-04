@@ -1,7 +1,7 @@
 local cry = {}
-local rattle = require 'app/rattle'
 local controllers = require 'app/controllers'
-local submarine = require 'app/submarine'
+local rattle = require 'app/rattle'
+local vec3 = require('lib/cpml').vec3
 
 function cry:init()
   self.skybox = g.newSkybox(
