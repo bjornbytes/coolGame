@@ -39,14 +39,16 @@ function mobile:init()
     }
   }
 
-  self.size = .5
+  self.size = 1
   self.numToys = _.count(self.toys)
   self.rotateSpeed = .5
-  self.position = { 0, 2.5, 1 }
+  self.position = { 0, 0, 0 }
   self.angle = 3 * math.pi / 180
+  self.model = lovr.graphics.newModel('art/mobile.obj')
+  self.model:setTexture(lovr.graphics.newTexture('art/mobile_DIFF.png'))
 
   self.toySize = .25 -- hitbox, in meters
-  self.toyTranslateZ = self.size
+  self.toyTranslateZ = .5
   self.toyRotate = 2 * math.pi / self.numToys
 
 
@@ -79,13 +81,14 @@ function mobile:update(dt)
 end
 
 function mobile:draw()
-  lovr.graphics.setWireframe(false)
+  local x, y, z = unpack(self.position)
 
   lovr.graphics.setColor(255, 255, 255)
   lovr.graphics.push()
-  lovr.graphics.translate(unpack(self.position))
-  lovr.graphics.rotate(self.angle, 0, 1, 0)
-  lovr.graphics.cube('fill', 0, 0, 0, self.size)
+  -- lovr.graphics.translate(x, y, z)
+  -- lovr.graphics.rotate(self.angle, 0, 1, 0)
+  -- lovr.graphics.translate(pos)
+  self.model:draw(x, y, z, self.size * .01, self.angle, 0, 1, 0)
   lovr.graphics.pop()
 
   self:drawToys()
