@@ -33,7 +33,7 @@ function cry:update(dt)
     local a, rx, ry, rz = lovr.headset.getOrientation()
     local playerDirection = quat.from_angle_axis(a, vec3(rx, ry, rz)) * vec3.unit_z
     local factor = vec3.dot(blockDirection, playerDirection)
-    block.position.z = block.position.z + factor * dt * 2
+    block.position.z = self.block.position.z + factor * dt * 2
   end
 
   -- Win
