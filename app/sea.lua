@@ -1,5 +1,7 @@
 local sea = {}
+local menu = require 'app/menu'
 local rattle = require 'app/rattle'
+local controller = require 'app/controller'
 local submarine = require 'app/submarine'
 
 function sea:init()
@@ -18,6 +20,7 @@ function sea:init()
     'art/skyboxes/sea_bk.jpg',
     'art/skyboxes/sea_ft.jpg'
   )
+  self.transitionFactor = 0
 
   submarine:init()
   rattle:init()
@@ -26,6 +29,16 @@ end
 function sea:update(dt)
   rattle:update(dt)
   submarine:update(dt)
+
+  local controller = controllers.list[1]
+  if controller and controller:isDown('system') then
+    self.transitionFactor = math.min(self.transitionFactor + dt, 1)
+    if self.transitionFactor >= 1 then
+      setState(menu)
+    end
+  else
+    self.transitionFactor = math.max(self.transitionFactor - dt, 0)
+  end
 end
 
 function sea:draw()
