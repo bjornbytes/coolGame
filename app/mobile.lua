@@ -79,7 +79,7 @@ function mobile.controllerInRange(self, basePos, size)
   if controller then
     local pos = vec3(controller:getPosition())
     local center = vec3(unpack(basePos))
-    local distance = controllerPos:dist(center)
+    local distance = pos:dist(center)
     local radius = size
 
     return distance < radius and true or false
