@@ -32,8 +32,8 @@ function sleep:update(dt)
   if rattle.isShaking then
     local shake = _.clamp((rattle.shake - .035) * 5, 0, 1)
     local x, y, z = lovr.headset.getPosition()
-    local factor = (1 - _.clamp(y / 2, 0, 1)) ^ 5
-    self.block.position.y = math.max(self.block.position.y - dt * shake * factor, 1)
+    local factor = (1 - _.clamp(y / 2, 0, 1)) ^ 2
+    self.block.position.y = math.max(self.block.position.y - dt * factor, 1)
   else
     self.block.position.y = math.min(self.block.position.y + dt * .2, self.block.maxY)
   end
