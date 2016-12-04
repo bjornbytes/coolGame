@@ -6,12 +6,6 @@ local menu = require 'app/menu'
 local controllers = require 'app/controllers'
 local state = menu
 
-won = {
-  cry = false,
-  sleep = false,
-  play = false
-}
-
 function lovr.load()
   controllers:init()
   menu:init()

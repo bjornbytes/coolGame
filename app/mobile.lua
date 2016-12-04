@@ -20,6 +20,7 @@ function mobile:init()
     submarine = {
       scale = .5,
       position = { 0, self.position[2], 0 },
+      wonPosition = { -1, 1, 1 },
       isEntered = false,
       angle = 0,
       model = lovr.graphics.newModel('art/mobile_submarine.obj'),
@@ -29,6 +30,7 @@ function mobile:init()
     plane = {
       scale = .5,
       position = { 0, self.position[2], 0 },
+      wonPosition = { 0, 1, 1 }
       isEntered = false,
       angle = 0,
       model = lovr.graphics.newModel('art/mobile_plane.obj'),
@@ -38,6 +40,7 @@ function mobile:init()
     balloon = {
       scale = .5,
       position = { 0, self.position[2], 0 },
+      wonPosition = { 1, 1, 1 },
       isEntered = false,
       angle = 0,
       model = lovr.graphics.newModel('art/mobile_balloon.obj'),
@@ -50,7 +53,6 @@ function mobile:init()
   self.toySize = .25 -- hitbox, in meters
   self.toyTranslateZ = .5
   self.toyRotate = 2 * math.pi / self.numToys
-
 
   _.each(self.toys, function(toy)
     toy.model:setTexture(lovr.graphics.newTexture('art/mobile_DIFF.png'))
@@ -65,6 +67,7 @@ function mobile:update(dt)
 
   local toyRotate = self.toyRotate
   _.each(self.toys, function(toy)
+    if toy.target.won then return end
 
     -- Translate to parent
     local m = mat4.identity()
@@ -91,7 +94,7 @@ end
 
 function mobile:drawToys()
   _.each(self.toys, function(toy)
-    local x, y, z = unpack(toy.position)
+    local x, y, z = unpack(toy.target.won and toy.wonPosition or toy.position)
     lovr.graphics.setColor(unpack(toy.color))
     lovr.graphics.setColor(255, 255, 255)
     toy.model:draw(x, y, z, toy.scale * .01, toy.angle, 0, 1, 0)

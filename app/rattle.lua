@@ -7,6 +7,7 @@ rattle.model:setTexture(lovr.graphics.newTexture('art/rattle_DIFF.png'))
 
 function rattle:init()
   self.lastPosition = nil
+  self.lastVelocity = nil
   self.shake = 0
 end
 
@@ -17,12 +18,18 @@ function rattle:update(dt)
     local pos = vec3(controller:getPosition())
 
     if self.lastPosition then
-      local delta = pos - self.lastPosition
-      self.shake = _.lerp(self.shake, delta:len() * 2, 6 * dt)
-      self.isShaking = self.shake > .035
-      if self.isShaking then
-        controller:vibrate(math.min((self.shake - .035) / 15, .003))
+      local velocity = pos - self.lastPosition
+
+      if self.lastVelocity then
+        local acceleration = (velocity - self.lastVelocity):len()
+        self.shake = _.lerp(self.shake, acceleration, math.min(16 * dt, 1))
+        self.isShaking = self.shake > .035
+        if self.isShaking then
+          controller:vibrate(math.min((self.shake - .035) / 10, .0035))
+        end
       end
+
+      self.lastVelocity = velocity
     end
 
     self.lastPosition = pos
@@ -36,8 +43,7 @@ function rattle:draw()
     local x, y, z = controller:getPosition()
     local angle, ax, ay, az = controller:getOrientation()
     lovr.graphics.setColor(255, 255, 255)
-    -- lovr.graphics.cube('line', x, y, z, .1 + self.shake * 4, -angle, ax, ay, az)
-    self.model:draw(x, y, z, .01 + self.shake * .015, -angle, ax, ay, az)
+    self.model:draw(x, y, z, .01 + self.shake * .025, -angle, ax, ay, az)
   end
 end
 

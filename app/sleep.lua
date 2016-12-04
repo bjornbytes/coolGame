@@ -3,6 +3,8 @@ local controllers = require('app/controllers')
 local rattle = require('app/rattle')
 local vec3 = require('lib/cpml').vec3
 
+sleep.won = false
+
 function sleep:init()
   self.skybox = g.newSkybox(
     'art/skyboxes/stormydays_ft.tga',
@@ -49,7 +51,7 @@ function sleep:update(dt)
     end
 
     if self.transitionFactor >= 1 then
-      -- YOU WIN
+      self.won = true
       local menu = require 'app/menu'
       setState(menu)
     end

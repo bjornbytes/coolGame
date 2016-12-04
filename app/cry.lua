@@ -4,6 +4,8 @@ local rattle = require 'app/rattle'
 local vec3 = require('lib/cpml').vec3
 local quat = require('lib/cpml').quat
 
+cry.won = false
+
 function cry:init()
   self.skybox = g.newSkybox(
     'art/skyboxes/sea_ft.jpg',
@@ -48,7 +50,7 @@ function cry:update(dt)
     end
 
     if self.transitionFactor >= 1 then
-      won.cry = true
+      self.won = true
       local menu = require 'app/menu'
       setState(menu)
     end
