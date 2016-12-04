@@ -28,7 +28,7 @@ function submarine:update(dt)
       end
     else
       if dist < self.periscope.size and trigger > deadzone then
-        self.periscope.grabbed = true
+        self.periscope.isGrabbed = true
       end
     end
   end
