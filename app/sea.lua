@@ -4,12 +4,19 @@ local submarine = require 'app/submarine'
 
 function sea:init()
   self.skybox = g.newSkybox(
-    'art/skyboxes/seaSide.png',
-    'art/skyboxes/seaSide.png',
-    'art/skyboxes/seaCeiling.png',
-    'art/skyboxes/seaFloor.png',
-    'art/skyboxes/seaSide.png',
-    'art/skyboxes/seaSide.png'
+    -- 'art/skyboxes/seaSide.png',
+    -- 'art/skyboxes/seaSide.png',
+    -- 'art/skyboxes/seaCeiling.png',
+    -- 'art/skyboxes/seaFloor.png',
+    -- 'art/skyboxes/seaSide.png',
+    -- 'art/skyboxes/seaSide.png'
+
+    'art/skyboxes/sea_rt.jpg',
+    'art/skyboxes/sea_lf.jpg',
+    'art/skyboxes/sea_up.jpg',
+    'art/skyboxes/sea_dn.jpg',
+    'art/skyboxes/sea_bk.jpg',
+    'art/skyboxes/sea_ft.jpg'
   )
 
   submarine:init()
@@ -19,7 +26,6 @@ end
 function sea:update(dt)
   rattle:update(dt)
   submarine:update(dt)
-  t = (t or 0) + dt
 end
 
 function sea:draw()
