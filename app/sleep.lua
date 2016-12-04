@@ -5,12 +5,12 @@ local vec3 = require('lib/cpml').vec3
 
 function sleep:init()
   self.skybox = g.newSkybox(
-    'art/skyboxes/stormydays_rt.tga',
-    'art/skyboxes/stormydays_lf.tga',
+    'art/skyboxes/stormydays_ft.tga',
+    'art/skyboxes/stormydays_bk.tga',
     'art/skyboxes/stormydays_up.tga',
     'art/skyboxes/stormydays_dn.tga',
-    'art/skyboxes/stormydays_bk.tga',
-    'art/skyboxes/stormydays_ft.tga'
+    'art/skyboxes/stormydays_rt.tga',
+    'art/skyboxes/stormydays_lf.tga'
   )
 
   self.floor = g.newBuffer(lovr.headset.getBoundsGeometry())

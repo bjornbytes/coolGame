@@ -1,22 +1,14 @@
 local controllers = require 'app/controllers'
 local cry = require 'app/cry'
+local sleep = require 'app/sleep'
 local vec3 = require('lib/cpml').vec3
 local mat4 = require('lib/cpml').mat4
 
 local mobile = {}
 
 function mobile:init()
-  self.size = .5
-  self.numToys = 4
-  self.rotateSpeed = .5
-  self.position = { 0, 2.5, 1 }
-  self.angle = 3 * math.pi / 180
-
   self.isEntered = false
 
-  self.toySize = .25 -- hitbox, in meters
-  self.toyRotate = 2 * math.pi / self.numToys
-  self.toyTranslateZ = self.size
   self.toys = {
     submarine = {
       scale = .5,
@@ -32,29 +24,31 @@ function mobile:init()
       position = { 0, 0, 0 },
       isEntered = false,
       angle = 0,
-      model = lovr.graphics.newModel('art/mobile_submarine.obj'),
+      model = lovr.graphics.newModel('art/mobile_plane.obj'),
       color = { 200, 200, 0 },
-      target = cry
+      target = sleep
     },
-    train = {
+    balloon = {
       scale = .5,
       position = { 0, 0, 0 },
       isEntered = false,
       angle = 0,
       model = lovr.graphics.newModel('art/mobile_submarine.obj'),
       color = { 0, 200, 200 },
-      target = cry
-    },
-    rocketship = {
-      scale = .5,
-      position = { 0, 0, 0 },
-      isEntered = false,
-      angle = 0,
-      model = lovr.graphics.newModel('art/mobile_submarine.obj'),
-      color = { 200, 0, 200 },
-      target = cry
+      target = sleep
     }
   }
+
+  self.size = .5
+  self.numToys = _.count(self.toys)
+  self.rotateSpeed = .5
+  self.position = { 0, 2.5, 1 }
+  self.angle = 3 * math.pi / 180
+
+  self.toySize = .25 -- hitbox, in meters
+  self.toyTranslateZ = self.size
+  self.toyRotate = 2 * math.pi / self.numToys
+
 
   _.each(self.toys, function(toy)
     toy.model:setTexture(lovr.graphics.newTexture('art/mobile_DIFF.png'))
