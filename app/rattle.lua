@@ -2,6 +2,9 @@ local rattle = {}
 local controllers = require 'app/controllers'
 local vec3 = require('lib/cpml').vec3
 
+rattle.model = lovr.graphics.newModel('art/rattle.obj')
+rattle.model:setTexture(lovr.graphics.newTexture('art/rattle_DIFF.png'))
+
 function rattle:init()
   self.lastPosition = nil
   self.shake = 0
@@ -33,7 +36,8 @@ function rattle:draw()
     local x, y, z = controller:getPosition()
     local angle, ax, ay, az = controller:getOrientation()
     lovr.graphics.setColor(255, 255, 255)
-    lovr.graphics.cube('line', x, y, z, .1 + self.shake * 4, -angle, ax, ay, az)
+    -- lovr.graphics.cube('line', x, y, z, .1 + self.shake * 4, -angle, ax, ay, az)
+    self.model:draw(x, y, z, .01 + self.shake * .015, -angle, ax, ay, az)
   end
 end
 
