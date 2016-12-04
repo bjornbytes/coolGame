@@ -41,7 +41,7 @@ function sleep:update(dt)
   local controller = controllers.list[1]
   local trigger = controller and controller:getAxis('trigger')
   local dist = controller and vec3(controller:getPosition()):dist(self.block.position)
-  if controller and trigger > .9 and dist < self.block.size / 2 then
+  if controller and trigger > .5 and dist < self.block.size then
     self.transitionFactor = math.min(self.transitionFactor + dt, 1)
 
     if self.transitionFactor > 0 then
