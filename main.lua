@@ -4,7 +4,7 @@ local cry = require 'app/cry'
 local sleep = require 'app/sleep'
 local menu = require 'app/menu'
 local controllers = require 'app/controllers'
-local state = sleep
+local state = cry
 
 function lovr.load()
   controllers:init()
