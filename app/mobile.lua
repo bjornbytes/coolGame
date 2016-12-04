@@ -1,4 +1,5 @@
 local controllers = require 'app/controllers'
+local sea = require 'app/sea'
 local vec3 = require('lib/cpml').vec3
 local mat4 = require('lib/cpml').mat4
 
@@ -22,30 +23,36 @@ function mobile:init()
       position = { 0, 0, 0 },
       isEntered = false,
       angle = 0,
-      color = { 200, 0, 0 }
+      color = { 200, 0, 0 },
+      target = sea
     },
     plane = {
       scale = 1,
       position = { 0, 0, 0 },
       isEntered = false,
       angle = 0,
-      color = { 200, 200, 0 }
+      color = { 200, 200, 0 },
+      target = sea
     },
     train = {
       scale = 1,
       position = { 0, 0, 0 },
       isEntered = false,
       angle = 0,
-      color = { 0, 200, 200 }
+      color = { 0, 200, 200 },
+      target = sea
     },
     rocketship = {
       scale = 1,
       position = { 0, 0, 0 },
       isEntered = false,
       angle = 0,
-      color = { 200, 0, 200 }
+      color = { 200, 0, 200 },
+      target = sea
     }
   }
+
+  self.transitionFactor = 0
 end
 
 function mobile:update(dt)
@@ -108,7 +115,8 @@ function mobile:handleToyInput(dt)
   local controller = controllers.list[1]
   if not controller then return end
 
-  local isEntered = false
+  local trigger = controller:getAxis('trigger')
+  local activeToy = nil
 
   _.each(self.toys, function(toy)
     local wasEntered = toy.isEntered
@@ -116,7 +124,7 @@ function mobile:handleToyInput(dt)
     if toy.isEntered then
       toy.scale = _.lerp(toy.scale, 1.25, 8 * dt)
       toy.angle = toy.angle + dt
-      isEntered = true
+      activeToy = toy
     else
       toy.scale = _.lerp(toy.scale, 1, 8 * dt)
     end
@@ -126,7 +134,20 @@ function mobile:handleToyInput(dt)
     end
   end)
 
-  self.isEntered = isEntered
+  if activeToy and trigger > .9 then
+    self.transitionFactor = math.min(self.transitionFactor + dt, 1)
+    if self.transitionFactor >= 1 then
+      setState(activeToy.target)
+    end
+  else
+    self.transitionFactor = math.max(self.transitionFactor - dt, 0)
+  end
+
+  if self.transitionFactor > 0 then
+    controller:vibrate(self.transitionFactor^2 * .0035)
+  end
+
+  self.isEntered = activeToy ~= nil
   self.rotateSpeed = _.lerp(self.rotateSpeed, self.isEntered and 0 or .5, 4 * dt)
 end
 

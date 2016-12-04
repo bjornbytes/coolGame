@@ -1,8 +1,6 @@
 _ = require 'lib.lume'
 g = lovr.graphics
-local artichoke = require 'app/artichoke'
 local sea = require 'app/sea'
-local mobile = require 'app/mobile'
 local menu = require 'app/menu'
 local controllers = require 'app/controllers'
 local state = menu
@@ -10,7 +8,8 @@ local state = menu
 function lovr.load()
   -- lovr.graphics.setCullingEnabled(true)
   controllers:init()
-  state:init()
+  menu:init()
+  sea:init()
 end
 
 function lovr.update(dt)
@@ -27,4 +26,8 @@ end
 
 function lovr.controllerremoved(...)
   controllers:remove(...)
+end
+
+function setState(newState)
+  state = newState
 end
