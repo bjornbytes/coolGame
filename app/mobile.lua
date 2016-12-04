@@ -5,11 +5,13 @@ local mat4 = require('lib/cpml').mat4
 local mobile = {}
 
 function mobile:init()
-  self.angle = 3 * math.pi / 180
   self.size = .5
-  self.position = { 0, 2, 1 }
   self.numToys = 4
   self.rotateSpeed = .5
+  self.position = { 0, 2, 1 }
+  self.angle = 3 * math.pi / 180
+
+  self.isEntered = false
 
   self.toySize = self.size / 4
   self.toyRotate = 2 * math.pi / self.numToys
@@ -32,7 +34,7 @@ end
 
 function mobile:update(dt)
   self.angle = self.angle + dt * self.rotateSpeed
-  self:speed(dt)
+  self:handMobileInput(dt)
 
   local toyRotate = self.toyRotate
   _.each(self.toys, function(toy)
@@ -74,7 +76,7 @@ function mobile:drawToys()
   end)
 end
 
-function mobile.controllerInRange(self, basePos, size)
+function mobile.controllerInRange(basePos, size)
   local controller = controllers.list[1]
   if controller then
     local pos = vec3(controller:getPosition())
@@ -86,8 +88,18 @@ function mobile.controllerInRange(self, basePos, size)
   end
 end
 
-function mobile:speed(dt)
-  self.rotateSpeed = _.lerp(self.rotateSpeed, self.controllerInRange(self, self.position, self.size) and 0 or .5, 2 * dt)
+function mobile:handMobileInput(dt)
+  local controller = controllers.list[1]
+  if not controller then return end
+
+  local wasEntered = self.isEntered
+  self.isEntered = self.controllerInRange(self.position, self.size)
+  self.rotateSpeed = _.lerp(self.rotateSpeed, self.isEntered and 0 or .5, 2 * dt)
+  if not wasEntered and self.isEntered then controller:vibrate(.003) end
+end
+
+function handleToyInput()
+
 end
 
 return mobile
