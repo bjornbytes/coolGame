@@ -38,12 +38,18 @@ end
 
 function rattle:draw()
   local controller = controllers.list[1]
+  local levels = { require('app/cry'), require('app/sleep'), require('app/play') }
 
   if controller then
     local x, y, z = controller:getPosition()
     local angle, ax, ay, az = controller:getOrientation()
     lovr.graphics.setColor(255, 255, 255)
-    self.model:draw(x, y, z, .01 + self.shake * .025, -angle, ax, ay, az)
+    if _.all(levels, 'won') then
+      -- TODO Draw keyblade
+      self.model:draw(x, y, z, .01 + self.shake * .025, -angle, ax, ay, az)
+    else
+      self.model:draw(x, y, z, .01 + self.shake * .025, -angle, ax, ay, az)
+    end
   end
 end
 
