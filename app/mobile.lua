@@ -14,12 +14,12 @@ function mobile:init()
 
   self.isEntered = false
 
-  self.toySize = self.size
+  self.toySize = .25 -- hitbox, in meters
   self.toyRotate = 2 * math.pi / self.numToys
   self.toyTranslateZ = self.size
   self.toys = {
     submarine = {
-      scale = 1,
+      scale = .5,
       position = { 0, 0, 0 },
       isEntered = false,
       angle = 0,
@@ -28,7 +28,7 @@ function mobile:init()
       target = sea
     },
     plane = {
-      scale = 1,
+      scale = .5,
       position = { 0, 0, 0 },
       isEntered = false,
       angle = 0,
@@ -37,7 +37,7 @@ function mobile:init()
       target = sea
     },
     train = {
-      scale = 1,
+      scale = .5,
       position = { 0, 0, 0 },
       isEntered = false,
       angle = 0,
@@ -46,7 +46,7 @@ function mobile:init()
       target = sea
     },
     rocketship = {
-      scale = 1,
+      scale = .5,
       position = { 0, 0, 0 },
       isEntered = false,
       angle = 0,
@@ -98,13 +98,11 @@ function mobile:draw()
 end
 
 function mobile:drawToys()
-  local toySize = self.toySize
-
   _.each(self.toys, function(toy)
     local x, y, z = unpack(toy.position)
     lovr.graphics.setColor(unpack(toy.color))
     lovr.graphics.setColor(255, 255, 255)
-    toy.model:draw(x, y, z, toySize * toy.scale * .01, toy.angle, 0, 1, 0)
+    toy.model:draw(x, y, z, toy.scale * .01, toy.angle, 0, 1, 0)
   end)
 
   drawTransition(self.transitionFactor)
@@ -133,11 +131,11 @@ function mobile:handleToyInput(dt)
     local wasEntered = toy.isEntered
     toy.isEntered = self.controllerInRange(toy.position, self.toySize)
     if toy.isEntered then
-      toy.scale = _.lerp(toy.scale, 1.25, 8 * dt)
+      toy.scale = _.lerp(toy.scale, .625, 8 * dt)
       toy.angle = toy.angle + dt
       activeToy = toy
     else
-      toy.scale = _.lerp(toy.scale, 1, 8 * dt)
+      toy.scale = _.lerp(toy.scale, .5, 8 * dt)
     end
 
     if wasEntered ~= toy.isEntered then
