@@ -3,6 +3,15 @@ local rattle = require 'app/rattle'
 local submarine = require 'app/submarine'
 
 function sea:init()
+  self.skybox = g.newSkybox(
+    'art/skyboxes/seaSide.png',
+    'art/skyboxes/seaSide.png',
+    'art/skyboxes/seaFloor.png',
+    'art/skyboxes/seaCeiling.png',
+    'art/skyboxes/seaSide.png',
+    'art/skyboxes/seaSide.png'
+  )
+
   submarine:init()
   rattle:init()
 end
@@ -14,7 +23,8 @@ function sea:update(dt)
 end
 
 function sea:draw()
-  lovr.graphics.setBackgroundColor(0, 50, 100)
+  local a, rx, ry, rz = lovr.headset.getOrientation()
+  self.skybox:draw(-a, rx, ry, rz)
 
   submarine:draw()
   rattle:draw()
