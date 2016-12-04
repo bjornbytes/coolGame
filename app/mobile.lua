@@ -9,10 +9,17 @@ local mobile = {}
 function mobile:init()
   self.isEntered = false
 
+  self.position = { 0, 11.5, 0 }
+  self.size = 1
+  self.rotateSpeed = .5
+  self.angle = 3 * math.pi / 180
+  self.model = lovr.graphics.newModel('art/mobile.obj')
+  self.model:setTexture(lovr.graphics.newTexture('art/mobile_DIFF.png'))
+
   self.toys = {
     submarine = {
       scale = .5,
-      position = { 0, 0, 0 },
+      position = { 0, self.position[2], 0 },
       isEntered = false,
       angle = 0,
       model = lovr.graphics.newModel('art/mobile_submarine.obj'),
@@ -21,7 +28,7 @@ function mobile:init()
     },
     plane = {
       scale = .5,
-      position = { 0, 0, 0 },
+      position = { 0, self.position[2], 0 },
       isEntered = false,
       angle = 0,
       model = lovr.graphics.newModel('art/mobile_plane.obj'),
@@ -30,7 +37,7 @@ function mobile:init()
     },
     balloon = {
       scale = .5,
-      position = { 0, 0, 0 },
+      position = { 0, self.position[2], 0 },
       isEntered = false,
       angle = 0,
       model = lovr.graphics.newModel('art/mobile_submarine.obj'),
@@ -39,14 +46,7 @@ function mobile:init()
     }
   }
 
-  self.size = 1
   self.numToys = _.count(self.toys)
-  self.rotateSpeed = .5
-  self.position = { 0, 0, 0 }
-  self.angle = 3 * math.pi / 180
-  self.model = lovr.graphics.newModel('art/mobile.obj')
-  self.model:setTexture(lovr.graphics.newTexture('art/mobile_DIFF.png'))
-
   self.toySize = .25 -- hitbox, in meters
   self.toyTranslateZ = .5
   self.toyRotate = 2 * math.pi / self.numToys
@@ -73,7 +73,7 @@ function mobile:update(dt)
 
     -- Shoot outwards from parent
     m:rotate(m, toyRotate, vec3(0, 1, 0))
-    m:translate(m, vec3(0, -.4, self.toyTranslateZ))
+    m:translate(m, vec3(0,  -10, self.toyTranslateZ))
 
     toy.position = { m[13], m[14], m[15] }
     toyRotate = toyRotate + self.toyRotate
@@ -84,12 +84,7 @@ function mobile:draw()
   local x, y, z = unpack(self.position)
 
   lovr.graphics.setColor(255, 255, 255)
-  lovr.graphics.push()
-  -- lovr.graphics.translate(x, y, z)
-  -- lovr.graphics.rotate(self.angle, 0, 1, 0)
-  -- lovr.graphics.translate(pos)
   self.model:draw(x, y, z, self.size * .01, self.angle, 0, 1, 0)
-  lovr.graphics.pop()
 
   self:drawToys()
 end

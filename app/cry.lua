@@ -5,12 +5,12 @@ local vec3 = require('lib/cpml').vec3
 
 function cry:init()
   self.skybox = g.newSkybox(
-  'art/skyboxes/sea_ft.jpg'
-  'art/skyboxes/sea_bk.jpg',
+    'art/skyboxes/sea_ft.jpg',
+    'art/skyboxes/sea_bk.jpg',
     'art/skyboxes/sea_up.jpg',
     'art/skyboxes/sea_dn.jpg',
     'art/skyboxes/sea_rt.jpg',
-    'art/skyboxes/sea_lf.jpg',
+    'art/skyboxes/sea_lf.jpg'
   )
 
   self.floor = g.newBuffer(lovr.headset.getBoundsGeometry())
