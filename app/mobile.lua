@@ -6,6 +6,7 @@ local mobile = {}
 function mobile:init()
   self.angle = 3 * math.pi / 180
   self.size = .5
+  self.position = { 0, 2, 1 }
   self.numToys = 4
   self.rotateSpeed = .5
 
@@ -30,12 +31,7 @@ end
 
 function mobile:update(dt)
   self.angle = self.angle + dt * self.rotateSpeed
-
-  local controller = controllers.list[1]
-  if controller then
-    local pos = vec3(controller:getPosition())
-    mobile:speed(dt, pos)
-  end
+  self:speed(dt)
 end
 
 function mobile:draw()
@@ -43,7 +39,7 @@ function mobile:draw()
 
   lovr.graphics.setColor(255, 255, 255)
   lovr.graphics.push()
-  lovr.graphics.translate(0, 2, 1)
+  lovr.graphics.translate(unpack(self.position))
   lovr.graphics.rotate(self.angle, 0, 1, 0)
   lovr.graphics.cube('fill', 0, 0, 0, self.size)
   self:drawToys()
@@ -68,17 +64,20 @@ function mobile:drawToys()
   end
 end
 
-function mobile:speed(dt)
+function mobile.controllerInRange(self, basePos, size)
   local controller = controllers.list[1]
   if controller then
     local pos = vec3(controller:getPosition())
-    local center = vec3(0, 2, 1)
-    local delta = controllerPos - center
-    local l = delta:len()
-    local radius = self.size
+    local center = vec3(unpack(basePos))
+    local distance = controllerPos:dist(center)
+    local radius = size
 
-    self.rotateSpeed = _.lerp(self.rotateSpeed, l < radius and 0 or .5, 2 * dt)
+    return distance < radius and true or false
   end
+end
+
+function mobile:speed(dt)
+  self.rotateSpeed = _.lerp(self.rotateSpeed, self.controllerInRange(self, self.position, self.size) and 0 or .5, 2 * dt)
 end
 
 return mobile
