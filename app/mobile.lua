@@ -50,7 +50,6 @@ end
 
 function mobile:update(dt)
   self.angle = self.angle + dt * self.rotateSpeed
-  self:handMobileInput(dt)
   self:handleToyInput(dt)
 
   local toyRotate = self.toyRotate
@@ -105,35 +104,30 @@ function mobile.controllerInRange(basePos, size)
   end
 end
 
-function mobile:handMobileInput(dt)
-  local controller = controllers.list[1]
-  if not controller then return end
-
-  local wasEntered = self.isEntered
-  self.isEntered = self.controllerInRange(self.position, self.size)
-  self.rotateSpeed = _.lerp(self.rotateSpeed, self.isEntered and 0 or .5, 2 * dt)
-  if not wasEntered and self.isEntered then controller:vibrate(.003) end
-end
-
 function mobile:handleToyInput(dt)
   local controller = controllers.list[1]
   if not controller then return end
 
+  local isEntered = false
+
   _.each(self.toys, function(toy)
-    toy.isEntered = toy.controllerInRange(toy.position, self.toySize)
+    local wasEntered = toy.isEntered
+    toy.isEntered = self.controllerInRange(toy.position, self.toySize)
     if toy.isEntered then
-      -- lerp scale
-      toy.scale = _.lerp(toy.scale, 1.2, 8 * dt)
-      -- vibrate
-      controller:vibrate((math.sin(lovr.timer.getTime() * 4) / 2 + .5) * .0035)
-      -- spin
+      toy.scale = _.lerp(toy.scale, 1.25, 8 * dt)
       toy.angle = toy.angle + dt
-      -- glow
-      -- play sound effect
+      isEntered = true
     else
       toy.scale = _.lerp(toy.scale, 1, 8 * dt)
     end
+
+    if wasEntered ~= toy.isEntered then
+      controller:vibrate(.0035)
+    end
   end)
+
+  self.isEntered = isEntered
+  self.rotateSpeed = _.lerp(self.rotateSpeed, self.isEntered and 0 or .5, 4 * dt)
 end
 
 return mobile

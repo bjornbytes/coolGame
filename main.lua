@@ -8,15 +8,13 @@ local controllers = require 'app/controllers'
 local state = menu
 
 function lovr.load()
-  t = 0
-  lovr.graphics.setCullingEnabled(true)
+  -- lovr.graphics.setCullingEnabled(true)
   controllers:init()
   state:init()
 end
 
 function lovr.update(dt)
   state:update(dt)
-  t = t + dt
 end
 
 function lovr.draw()
