@@ -30,7 +30,8 @@ function cry:update(dt)
 
   if rattle.isShaking then
     local blockDirection = self.block.position - vec3(lovr.headset.getPosition())
-    local playerDirection = quat.from_angle_axis(lovr.headset.getOrientation()) * vec3.unit_z
+    local a, rx, ry, rz = lovr.headset.getOrientation()
+    local playerDirection = quat.from_angle_axis(a, vec3(rx, ry, rz)) * vec3.unit_z
     local factor = vec3.dot(blockDirection, playerDirection)
     block.position.z = block.position.z + factor * dt * 2
   end
