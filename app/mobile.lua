@@ -9,20 +9,21 @@ function mobile:init()
   self.size = .5
   self.numToys = 4
   self.rotateSpeed = .5
-  self.position = { 0, 2, 1 }
+  self.position = { 0, 2.5, 1 }
   self.angle = 3 * math.pi / 180
 
   self.isEntered = false
 
-  self.toySize = self.size / 4
+  self.toySize = self.size
   self.toyRotate = 2 * math.pi / self.numToys
-  self.toyTranslateZ = self.size / 2
+  self.toyTranslateZ = self.size
   self.toys = {
     submarine = {
       scale = 1,
       position = { 0, 0, 0 },
       isEntered = false,
       angle = 0,
+      model = lovr.graphics.newModel('art/mobile_submarine.obj'),
       color = { 200, 0, 0 },
       target = sea
     },
@@ -31,6 +32,7 @@ function mobile:init()
       position = { 0, 0, 0 },
       isEntered = false,
       angle = 0,
+      model = lovr.graphics.newModel('art/mobile_submarine.obj'),
       color = { 200, 200, 0 },
       target = sea
     },
@@ -39,6 +41,7 @@ function mobile:init()
       position = { 0, 0, 0 },
       isEntered = false,
       angle = 0,
+      model = lovr.graphics.newModel('art/mobile_submarine.obj'),
       color = { 0, 200, 200 },
       target = sea
     },
@@ -47,10 +50,15 @@ function mobile:init()
       position = { 0, 0, 0 },
       isEntered = false,
       angle = 0,
+      model = lovr.graphics.newModel('art/mobile_submarine.obj'),
       color = { 200, 0, 200 },
       target = sea
     }
   }
+
+  _.each(self.toys, function(toy)
+    toy.model:setTexture(lovr.graphics.newTexture('art/mobile_DIFF.png'))
+  end)
 
   self.transitionFactor = 0
 end
@@ -95,8 +103,11 @@ function mobile:drawToys()
   _.each(self.toys, function(toy)
     local x, y, z = unpack(toy.position)
     lovr.graphics.setColor(unpack(toy.color))
-    lovr.graphics.cube('fill', x, y, z, toySize * toy.scale, toy.angle, 0, 1, 0)
+    lovr.graphics.setColor(255, 255, 255)
+    toy.model:draw(x, y, z, toySize * toy.scale * .01, toy.angle, 0, 1, 0)
   end)
+
+  drawTransition(self.transitionFactor)
 end
 
 function mobile.controllerInRange(basePos, size)

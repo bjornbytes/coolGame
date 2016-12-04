@@ -30,4 +30,19 @@ end
 
 function setState(newState)
   state = newState
+  newState.transitionFactor = 1
+end
+
+-- Draw me last!
+function drawTransition(factor)
+  if factor > 0 then
+    g.setColor(255, 255, 255, factor^2 * 255)
+    g.push()
+    g.origin()
+    g.translate(0, 0, -1)
+    g.setDepthTest()
+    g.plane('fill', 0, 0, 0, 5, 0, 0, 1)
+    g.setDepthTest('less')
+    g.pop()
+  end
 end
