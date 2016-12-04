@@ -14,6 +14,8 @@ function sea:update(dt)
 end
 
 function sea:draw()
+  lovr.graphics.setBackgroundColor(0, 50, 100)
+
   submarine:draw()
   rattle:draw()
 end
