@@ -4,12 +4,13 @@ local sea = require 'app/sea'
 local sleep = require 'app/sleep'
 local menu = require 'app/menu'
 local controllers = require 'app/controllers'
-local state = menu
+local state = sleep
 
 function lovr.load()
   -- lovr.graphics.setCullingEnabled(true)
   controllers:init()
   menu:init()
+  sleep:init()
   sea:init()
 end
 
