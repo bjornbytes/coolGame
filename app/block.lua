@@ -51,4 +51,3 @@ return function(letter)
   cubeFace:draw()
   g.pop()
 end
-
