@@ -21,7 +21,7 @@ function sleep:init()
   self.block = {}
   self.block.maxY = 6
   self.block.position = vec3(0, self.block.maxY, 0)
-  self.block.size = .4
+  self.block.size = .5
 
   self.transitionFactor = 0
 
@@ -34,9 +34,8 @@ function sleep:update(dt)
   -- Logic
   if rattle.isShaking then
     local x, y, z = lovr.headset.getPosition()
-    local factor = (_.clamp(y / 2, 0, 1)) ^ 2
-    local lowestPoint = .5 + self.block.maxY * .75 * factor
-    self.block.position.y = math.max(self.block.position.y - dt * factor * 2, lowestPoint)
+    local factor = (1 - _.clamp(y / 2.2, 0, 1)) ^ 2
+    self.block.position.y = math.max(self.block.position.y - dt * factor * 2, .5)
   else
     self.block.position.y = math.min(self.block.position.y + dt * .5, self.block.maxY)
   end

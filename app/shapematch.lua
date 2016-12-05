@@ -38,6 +38,7 @@ end
 function play:update(dt)
   rattle:update(dt)
   self.currentShape = self.shapes[1]
+  self.correctHole = self.currentShape and self.holes[self.currentShape.type]
 
   _.each(self.shapes, 'update', dt)
 
@@ -126,7 +127,7 @@ function play:setHoles()
       maxX = 1,
       minZ = -1,
       maxZ = 1,
-      color = { 0, 0, 245 }
+      color = { 255, 0, 245 }
     }
   }
 end

@@ -4,6 +4,12 @@ shape.__index = shape
 local vec3 = require('lib/cpml').vec3
 local quat = require('lib/cpml').quat
 
+local squareModel = lovr.graphics.newModel('art/duck.dae')
+squareModel:setTexture(lovr.graphics.newTexture('art/duck.tga'))
+
+local circleModel = lovr.graphics.newModel('art/mobile_plane.obj')
+circleModel:setTexture(lovr.graphics.newTexture('art/mobile_DIFF.png'))
+
 function shape.grow(position, type)
   local self = {}
 
@@ -11,12 +17,11 @@ function shape.grow(position, type)
   self.position = position
 
   if self.type == 'square' then
-    self.model = lovr.graphics.newModel('art/duck.dae')
-    self.model:setTexture(lovr.graphics.newTexture('art/duck.tga'))
+    self.model = squareModel
   else
-    self.model = lovr.graphics.newModel('art/mobile_plane.obj')
-    self.model:setTexture(lovr.graphics.newTexture('art/mobile_DIFF.png'))
+    self.model = circleModel
   end
+
   self.direction = vec3(0, 0, 0) - position -- player position - my postiion
   self.speed = _.random(.15, .2)
   local quat = quat.from_direction(self.direction, vec3(0, 1, 0))
