@@ -2,6 +2,7 @@ local sleep = {}
 local controllers = require('app/controllers')
 local rattle = require('app/rattle')
 local vec3 = require('lib/cpml').vec3
+local drawBlock = require('app/block')
 
 sleep.won = false
 
@@ -71,8 +72,10 @@ function sleep:draw()
   self.floor:draw()
 
   local x, y, z = self.block.position:unpack()
-  g.setColor(128, 0, 255)
-  g.cube('fill', x, y, z, self.block.size)
+  g.push()
+  g.translate(x, y, z)
+  drawBlock('e')
+  g.pop()
 
   drawTransition(self.transitionFactor)
 end

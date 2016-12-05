@@ -3,6 +3,7 @@ local controllers = require 'app/controllers'
 local rattle = require 'app/rattle'
 local vec3 = require('lib/cpml').vec3
 local quat = require('lib/cpml').quat
+local drawBlock = require('app/block')
 
 cry.won = false
 
@@ -20,7 +21,7 @@ function cry:init()
 
   self.block = {}
   self.block.position = vec3(0, 1, -4)
-  self.block.size = .4
+  self.block.size = .5
 
   self.transitionFactor = 0
 
@@ -72,8 +73,10 @@ function cry:draw()
   self.floor:draw()
 
   local x, y, z = self.block.position:unpack()
-  g.setColor(128, 0, 255)
-  g.cube('fill', x, y, z, self.block.size)
+  g.push()
+  g.translate(x, y, z)
+  drawBlock('k')
+  g.pop()
 
   drawTransition(self.transitionFactor)
 end
