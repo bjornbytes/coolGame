@@ -40,7 +40,7 @@ function mobile:init()
       angleNudge = .15,
       model = lovr.graphics.newModel('art/mobile_plane.obj'),
       color = { 200, 200, 0 },
-      target = sleep
+      target = play
     },
     balloon = {
       scale = .5,
@@ -52,7 +52,7 @@ function mobile:init()
       angleNudge = .25,
       model = lovr.graphics.newModel('art/mobile_balloon.obj'),
       color = { 0, 200, 200 },
-      target = play
+      target = sleep
     }
   }
 

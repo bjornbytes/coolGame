@@ -15,7 +15,7 @@ end
 
 function rattle:update(dt)
   local controller = controllers.list[1]
-  local levels = { require('app/cry'), require('app/sleep') }
+  local levels = { require('app/cry'), require('app/sleep'), require('app/play') }
 
   if controller and not _.all(levels, 'won') then
     local pos = vec3(controller:getPosition())
@@ -41,7 +41,7 @@ end
 
 function rattle:draw()
   local controller = controllers.list[1]
-  local levels = { require('app/cry'), require('app/sleep') }
+  local levels = { require('app/cry'), require('app/sleep'), require('app/play') }
 
   if controller then
     local x, y, z = controller:getPosition()

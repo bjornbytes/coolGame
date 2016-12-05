@@ -18,24 +18,28 @@ function sleep:init()
 
   self.floor = g.newBuffer(lovr.headset.getBoundsGeometry())
 
-  for i = 1, 3 do
+  self.blocks = {}
+  for i = 1, 4 do
+    local position
+
+    if i == 1 then
+      position = { -1, 1.5, 0 }
+    elseif i == 2 then
+      position = { 1, 1.5, 0 }
+    elseif i == 3 then
+      position = { 0, 1.5, -1 }
+    else
+      position = { 0, 1.5, 1 }
+    end
+
     local block = {}
     block.maxY = 6
-    block.position = vec3(0, 1.5, (2 * math.pi / 4) * i)
-    block.size = .4
+    block.position = vec3(unpack(position))
+    block.size = .5
     block.angle = 1
-    block.win = false
-    blocks[i] = block
+    block.win = i == 4
+    self.blocks[i] = block
   end
-  local block = {}
-  block.maxY = 6
-  block.position = vec3(0, 1.5, (2 * math.pi / 4) * 4)
-  block.size = .4
-  block.angle = 1
-  block.win = true
-  blocks[4] = self.block
-
-  self.blocks = {}
 
   self.transitionFactor = 0
 
@@ -55,25 +59,31 @@ function sleep:update(dt)
   -- Win
   local controller = controllers.list[1]
   local trigger = controller and controller:getAxis('trigger')
+  local isWinning = false
   _.each(self.blocks, function(block)
 
     local dist = controller and vec3(controller:getPosition()):dist(block.position)
-    if controller and trigger > .5 block.win and dist < block.size then
-      self.transitionFactor = math.min(self.transitionFactor + dt, 1)
-
-      if self.transitionFactor > 0 then
-        controller:vibrate(self.transitionFactor^2 * .0035)
-      end
-
-      if self.transitionFactor >= 1 then
-        self.won = true
-        local menu = require 'app/menu'
-        setState(menu)
-      end
-    else
-      self.transitionFactor = math.max(self.transitionFactor - dt, 0)
+    if controller and trigger > .5 and block.win and dist < .5 then
+      isWinning = true
     end
   end)
+
+  if controller and isWinning then
+    self.transitionFactor = math.min(self.transitionFactor + dt, 1)
+
+    print('hi')
+    if self.transitionFactor > 0 then
+      controller:vibrate(self.transitionFactor^2 * .0035)
+    end
+
+    if self.transitionFactor >= 1 then
+      self.won = true
+      local menu = require 'app/menu'
+      setState(menu)
+    end
+  else
+    self.transitionFactor = math.max(self.transitionFactor - dt, 0)
+  end
 end
 
 function sleep:draw()
