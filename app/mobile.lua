@@ -20,7 +20,7 @@ function mobile:init()
     submarine = {
       scale = .5,
       position = { 0, self.position[2], 0 },
-      wonPosition = { -.75, .6, 2 },
+      wonPosition = { -.75, .6, 2.2 },
       isEntered = false,
       angle = 0,
       model = lovr.graphics.newModel('art/mobile_submarine.obj'),
@@ -30,7 +30,7 @@ function mobile:init()
     plane = {
       scale = .5,
       position = { 0, self.position[2], 0 },
-      wonPosition = { 0, .6, 2 },
+      wonPosition = { 0, .6, 2.2 },
       isEntered = false,
       angle = 0,
       model = lovr.graphics.newModel('art/mobile_plane.obj'),
@@ -40,7 +40,7 @@ function mobile:init()
     balloon = {
       scale = .5,
       position = { 0, self.position[2], 0 },
-      wonPosition = { .75, .6, 2 },
+      wonPosition = { .75, .6, 2.2 },
       isEntered = false,
       angle = 0,
       model = lovr.graphics.newModel('art/mobile_balloon.obj'),
@@ -125,7 +125,10 @@ function mobile:handleToyInput(dt)
   _.each(self.toys, function(toy)
 
     -- You can't interact with a toy if you've beaten its level
-    if toy.target.won then return end
+    if toy.target.won then
+      toy.angle = toy.angle + dt
+      return
+    end
 
     local wasEntered = toy.isEntered
     toy.isEntered = self.controllerInRange(toy.position, self.toySize)
