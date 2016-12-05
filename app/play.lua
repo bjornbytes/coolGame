@@ -8,12 +8,12 @@ local play = {}
 
 function play:init()
   self.skybox = g.newSkybox(
-    'art/skyboxes/sea_ft.jpg',
-    'art/skyboxes/sea_bk.jpg',
-    'art/skyboxes/sea_up.jpg',
-    'art/skyboxes/sea_dn.jpg',
-    'art/skyboxes/sea_rt.jpg',
-    'art/skyboxes/sea_lf.jpg'
+    'art/skyboxes/bluecloud_ft.jpg',
+    'art/skyboxes/bluecloud_bk.jpg',
+    'art/skyboxes/bluecloud_up.jpg',
+    'art/skyboxes/bluecloud_dn.jpg',
+    'art/skyboxes/bluecloud_rt.jpg',
+    'art/skyboxes/bluecloud_lf.jpg'
   )
 
   self.floor = g.newBuffer(lovr.headset.getBoundsGeometry())
