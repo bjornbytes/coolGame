@@ -10,7 +10,7 @@ local mobile = {}
 function mobile:init()
   self.isEntered = false
 
-  self.position = { 0, 11.5, 0 }
+  self.position = { 0, 11.8, 0 }
   self.size = 1
   self.rotateSpeed = .5
   self.angle = 3 * math.pi / 180
@@ -20,10 +20,12 @@ function mobile:init()
   self.toys = {
     submarine = {
       scale = .5,
-      position = { 0, self.position[2], 0 },
+      position = { 0, 0, 0 },
       wonPosition = { -.75, .6, 2.2 },
+      stringLength = 10,
       isEntered = false,
       angle = 0,
+      angleNudge = -.59,
       model = lovr.graphics.newModel('art/mobile_submarine.obj'),
       color = { 200, 0, 0 },
       target = cry
@@ -32,8 +34,10 @@ function mobile:init()
       scale = .5,
       position = { 0, self.position[2], 0 },
       wonPosition = { 0, .6, 2.2 },
+      stringLength = 9.5,
       isEntered = false,
       angle = 0,
+      angleNudge = .15,
       model = lovr.graphics.newModel('art/mobile_plane.obj'),
       color = { 200, 200, 0 },
       target = sleep
@@ -42,8 +46,10 @@ function mobile:init()
       scale = .5,
       position = { 0, self.position[2], 0 },
       wonPosition = { .75, .6, 2.2 },
+      stringLength = 9.8,
       isEntered = false,
       angle = 0,
+      angleNudge = .25,
       model = lovr.graphics.newModel('art/mobile_balloon.obj'),
       color = { 0, 200, 200 },
       target = play
@@ -51,8 +57,8 @@ function mobile:init()
   }
 
   self.numToys = _.count(self.toys)
-  self.toySize = .25 -- hitbox, in meters
-  self.toyTranslateZ = .5
+  self.toySize = .38 -- hitbox, in meters
+  self.toyTranslateZ = .6
   self.toyRotate = 2 * math.pi / self.numToys
 
   _.each(self.toys, function(toy)
@@ -70,14 +76,16 @@ function mobile:update(dt)
   _.each(self.toys, function(toy)
     if toy.target.won then return end
 
-    -- Translate to parent
+    -- Translate to parent, rotate according to mobile angle
     local m = mat4.identity()
     m:translate(m, vec3(unpack(self.position)))
     m:rotate(m, self.angle, vec3(0, 1, 0))
 
-    -- Shoot outwards from parent
-    m:rotate(m, toyRotate, vec3(0, 1, 0))
-    m:translate(m, vec3(0,  -10, self.toyTranslateZ))
+    -- Rotate so they are spread out evenly
+    m:rotate(m, toyRotate + toy.angleNudge, vec3(0, 1, 0))
+
+    -- Move down based on string length, shoot outwards a bit
+    m:translate(m, vec3(0,  -toy.stringLength, self.toyTranslateZ))
 
     toy.position = { m[13], m[14], m[15] }
     toyRotate = toyRotate + self.toyRotate
@@ -139,6 +147,7 @@ function mobile:handleToyInput(dt)
       activeToy = toy
     else
       toy.scale = _.lerp(toy.scale, .5, 8 * dt)
+      toy.angle = toy.angle + dt / 2
     end
 
     if wasEntered ~= toy.isEntered then
