@@ -20,7 +20,7 @@ function cry:init()
 
   self.block = {}
   self.block.position = vec3(0, 1, -4)
-  self.block.size = .2
+  self.block.size = .4
 
   self.transitionFactor = 0
 
