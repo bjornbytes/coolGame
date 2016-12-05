@@ -2,15 +2,17 @@ _ = require 'lib.lume'
 g = lovr.graphics
 local cry = require 'app/cry'
 local sleep = require 'app/sleep'
+local play = require 'app/play'
 local menu = require 'app/menu'
 local controllers = require 'app/controllers'
-local state = menu
+local state = play
 
 function lovr.load()
   controllers:init()
   menu:init()
   cry:init()
   sleep:init()
+  play:init()
 end
 
 function lovr.update(dt)
