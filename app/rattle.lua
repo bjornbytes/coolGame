@@ -49,9 +49,9 @@ function rattle:draw()
     lovr.graphics.setColor(255, 255, 255)
     if _.all(levels, 'won') then
       -- TODO Draw keyblade
-      self.keyblade:draw(x, y, z, .75, -angle, ax, ay, az)
+      self.keyblade:draw(x, y, z, .75, angle, ax, ay, az)
     else
-      self.model:draw(x, y, z, .01 + self.shake * .025, -angle, ax, ay, az)
+      self.model:draw(x, y, z, .01 + self.shake * .025, angle, ax, ay, az)
     end
   end
 end

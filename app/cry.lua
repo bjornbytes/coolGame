@@ -65,7 +65,7 @@ end
 function cry:draw()
   local a, rx, ry, rz = lovr.headset.getOrientation()
   g.setColor(255, 255, 255)
-  self.skybox:draw(a, rx, ry, rz)
+  self.skybox:draw(-a, rx, ry, rz)
 
   rattle:draw()
 

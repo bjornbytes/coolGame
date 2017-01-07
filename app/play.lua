@@ -71,7 +71,6 @@ function sleep:update(dt)
   if controller and isWinning then
     self.transitionFactor = math.min(self.transitionFactor + dt, 1)
 
-    print('hi')
     if self.transitionFactor > 0 then
       controller:vibrate(self.transitionFactor^2 * .0035)
     end
@@ -89,7 +88,7 @@ end
 function sleep:draw()
   local a, rx, ry, rz = lovr.headset.getOrientation()
   g.setColor(255, 255, 255)
-  self.skybox:draw(a, rx, ry, rz)
+  self.skybox:draw(-a, rx, ry, rz)
 
   rattle:draw()
 
