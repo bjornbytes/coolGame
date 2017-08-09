@@ -17,7 +17,7 @@ function cry:init()
     'art/skyboxes/sea_lf.jpg'
   )
 
-  self.floor = g.newBuffer(lovr.headset.getBoundsGeometry())
+  self.floor = g.newMesh(lovr.headset.getBoundsGeometry())
 
   self.block = {}
   self.block.position = vec3(0, 1, -4)

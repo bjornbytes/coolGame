@@ -4,7 +4,7 @@ local textures = {
   y = lovr.graphics.newTexture('art/blockY.png')
 }
 
-local cubeFace = lovr.graphics.newBuffer({
+local cubeFace = lovr.graphics.newMesh({
   { -.25, .25, 0, 0,0,0, 0, 0 },
   { .25, .25, 0, 0,0,0, 1, 0 },
   { -.25, -.25, 0, 0,0,0, 0, 1 },

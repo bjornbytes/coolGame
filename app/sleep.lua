@@ -16,7 +16,7 @@ function sleep:init()
     'art/skyboxes/stormydays_lf.tga'
   )
 
-  self.floor = g.newBuffer(lovr.headset.getBoundsGeometry())
+  self.floor = g.newMesh(lovr.headset.getBoundsGeometry())
 
   self.block = {}
   self.block.maxY = 6

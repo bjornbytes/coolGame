@@ -16,7 +16,7 @@ function sleep:init()
     'art/skyboxes/bluecloud_lf.jpg'
   )
 
-  self.floor = g.newBuffer(lovr.headset.getBoundsGeometry())
+  self.floor = g.newMesh(lovr.headset.getBoundsGeometry())
 
   self.blocks = {}
   for i = 1, 4 do
