@@ -15,7 +15,7 @@ function mobile:init()
   self.rotateSpeed = .5
   self.angle = 3 * math.pi / 180
   self.model = lovr.graphics.newModel('art/mobile.obj')
-  self.model:setTexture(lovr.graphics.newTexture('art/mobile_DIFF.png'))
+  self.model:setMaterial(lovr.graphics.newMaterial('art/mobile_DIFF.png'))
 
   self.toys = {
     submarine = {
@@ -62,7 +62,7 @@ function mobile:init()
   self.toyRotate = 2 * math.pi / self.numToys
 
   _.each(self.toys, function(toy)
-    toy.model:setTexture(lovr.graphics.newTexture('art/mobile_DIFF.png'))
+    toy.model:setMaterial(lovr.graphics.newMaterial('art/mobile_DIFF.png'))
   end)
 
   self.transitionFactor = 0
@@ -95,7 +95,7 @@ end
 function mobile:draw()
   local x, y, z = unpack(self.position)
 
-  lovr.graphics.setColor(255, 255, 255)
+  lovr.graphics.setColor(1, 1, 1)
   self.model:draw(x, y, z, self.size * .01, self.angle, 0, 1, 0)
 
   self:drawToys()
@@ -105,7 +105,7 @@ function mobile:drawToys()
   _.each(self.toys, function(toy)
     local x, y, z = unpack(toy.target.won and toy.wonPosition or toy.position)
     lovr.graphics.setColor(unpack(toy.color))
-    lovr.graphics.setColor(255, 255, 255)
+    lovr.graphics.setColor(1, 1, 1)
     toy.model:draw(x, y, z, toy.scale * .01, toy.angle, 0, 1, 0)
   end)
 

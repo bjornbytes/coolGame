@@ -7,7 +7,7 @@ local drawBlock = require('app/block')
 sleep.won = false
 
 function sleep:init()
-  self.skybox = g.newSkybox(
+  self.skybox = g.newTexture(
     'art/skyboxes/bluecloud_ft.jpg',
     'art/skyboxes/bluecloud_bk.jpg',
     'art/skyboxes/bluecloud_up.jpg',
@@ -87,12 +87,12 @@ end
 
 function sleep:draw()
   local a, rx, ry, rz = lovr.headset.getOrientation()
-  g.setColor(255, 255, 255)
-  self.skybox:draw(-a, rx, ry, rz)
+  g.setColor(1, 1, 1)
+  g.skybox(self.skybox, -a, rx, ry, rz)
 
   rattle:draw()
 
-  g.setColor(255, 255, 255, 80)
+  g.setColor(1, 1, 1, 80 / 255)
   self.floor:draw()
 
   _.each(self.blocks, function(block)

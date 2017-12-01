@@ -11,10 +11,12 @@ local cubeFace = lovr.graphics.newMesh({
   { .25, -.25, 0, 0,0,0, 1, 1 }
 }, 'strip')
 
+cubeFace:setMaterial(lovr.graphics.newMaterial())
+
 -- DAMMIT
 return function(letter)
-  g.setColor(255, 255, 255)
-  cubeFace:setTexture(textures[letter])
+  g.setColor(1, 1, 1)
+  cubeFace:getMaterial():setTexture(textures[letter])
 
   g.push()
   g.rotate(0, 0, 1, 0)

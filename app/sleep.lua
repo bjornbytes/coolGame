@@ -7,7 +7,7 @@ local drawBlock = require('app/block')
 sleep.won = false
 
 function sleep:init()
-  self.skybox = g.newSkybox(
+  self.skybox = g.newTexture(
     'art/skyboxes/stormydays_ft.tga',
     'art/skyboxes/stormydays_bk.tga',
     'art/skyboxes/stormydays_up.tga',
@@ -63,12 +63,12 @@ end
 
 function sleep:draw()
   local a, rx, ry, rz = lovr.headset.getOrientation()
-  g.setColor(255, 255, 255)
-  self.skybox:draw(-a, rx, ry, rz)
+  g.setColor(1, 1, 1)
+  g.skybox(self.skybox, -a, rx, ry, rz)
 
   rattle:draw()
 
-  g.setColor(255, 255, 255, 80)
+  g.setColor(1, 1, 1, 80 / 255)
   self.floor:draw()
 
   local x, y, z = self.block.position:unpack()

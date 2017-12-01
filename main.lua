@@ -39,7 +39,7 @@ end
 -- Draw me last!
 function drawTransition(factor)
   if factor > 0 then
-    g.setColor(255, 255, 255, factor^2 * 255)
+    g.setColor(1, 1, 1, factor^2)
     g.push()
     g.origin()
     g.translate(0, 0, -1)

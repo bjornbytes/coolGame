@@ -8,7 +8,7 @@ local drawBlock = require('app/block')
 cry.won = false
 
 function cry:init()
-  self.skybox = g.newSkybox(
+  self.skybox = g.newTexture(
     'art/skyboxes/sea_ft.jpg',
     'art/skyboxes/sea_bk.jpg',
     'art/skyboxes/sea_up.jpg',
@@ -64,12 +64,12 @@ end
 
 function cry:draw()
   local a, rx, ry, rz = lovr.headset.getOrientation()
-  g.setColor(255, 255, 255)
-  self.skybox:draw(-a, rx, ry, rz)
+  g.setColor(1, 1, 1)
+  g.skybox(self.skybox, -a, rx, ry, rz)
 
   rattle:draw()
 
-  g.setColor(255, 255, 255, 80)
+  g.setColor(1, 1, 1, 80 / 255)
   self.floor:draw()
 
   local x, y, z = self.block.position:unpack()

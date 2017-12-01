@@ -3,7 +3,7 @@ local controllers = require 'app/controllers'
 local vec3 = require('lib/cpml').vec3
 
 rattle.model = lovr.graphics.newModel('art/rattle.obj')
-rattle.model:setTexture(lovr.graphics.newTexture('art/rattle_DIFF.png'))
+rattle.model:setMaterial(lovr.graphics.newMaterial('art/rattle_DIFF.png'))
 
 rattle.keyblade = lovr.graphics.newModel('art/keyblade.obj')
 
@@ -46,7 +46,7 @@ function rattle:draw()
   if controller then
     local x, y, z = controller:getPosition()
     local angle, ax, ay, az = controller:getOrientation()
-    lovr.graphics.setColor(255, 255, 255)
+    lovr.graphics.setColor(1, 1, 1)
     if _.all(levels, 'won') then
       -- TODO Draw keyblade
       self.keyblade:draw(x, y, z, .75, angle, ax, ay, az)
