@@ -1,7 +1,4 @@
 local controllers = require 'app/controllers'
-local cry = require 'app/cry'
-local sleep = require 'app/sleep'
-local play = require 'app/play'
 local vec3 = require('cpml').vec3
 local mat4 = require('cpml').mat4
 
@@ -27,8 +24,7 @@ function mobile:init()
       angle = 0,
       angleNudge = -.59,
       model = lovr.graphics.newModel('art/mobile_submarine.obj'),
-      color = { 200, 0, 0 },
-      target = cry
+      color = { 200, 0, 0 }
     },
     plane = {
       scale = .5,
@@ -39,8 +35,7 @@ function mobile:init()
       angle = 0,
       angleNudge = .15,
       model = lovr.graphics.newModel('art/mobile_plane.obj'),
-      color = { 200, 200, 0 },
-      target = play
+      color = { 200, 200, 0 }
     },
     balloon = {
       scale = .5,
@@ -51,8 +46,7 @@ function mobile:init()
       angle = 0,
       angleNudge = .25,
       model = lovr.graphics.newModel('art/mobile_balloon.obj'),
-      color = { 0, 200, 200 },
-      target = sleep
+      color = { 0, 200, 200 }
     }
   }
 
@@ -64,8 +58,6 @@ function mobile:init()
   _.each(self.toys, function(toy)
     toy.model:setMaterial(lovr.graphics.newMaterial('art/mobile_DIFF.png'))
   end)
-
-  self.transitionFactor = 0
 end
 
 function mobile:update(dt)
@@ -74,7 +66,6 @@ function mobile:update(dt)
 
   local toyRotate = self.toyRotate
   _.each(self.toys, function(toy)
-    if toy.target.won then return end
 
     -- Translate to parent, rotate according to mobile angle
     local m = mat4.identity()
@@ -103,13 +94,11 @@ end
 
 function mobile:drawToys()
   _.each(self.toys, function(toy)
-    local x, y, z = unpack(toy.target.won and toy.wonPosition or toy.position)
+    local x, y, z = unpack(toy.position)
     lovr.graphics.setColor(unpack(toy.color))
     lovr.graphics.setColor(1, 1, 1)
     toy.model:draw(x, y, z, toy.scale * .01, toy.angle, 0, 1, 0)
   end)
-
-  drawTransition(self.transitionFactor)
 end
 
 function mobile.controllerInRange(basePos, size)
@@ -128,16 +117,9 @@ function mobile:handleToyInput(dt)
   local controller = controllers.list[1]
   if not controller then return end
 
-  local trigger = controller:getAxis('trigger')
   local activeToy = nil
 
   _.each(self.toys, function(toy)
-
-    -- You can't interact with a toy if you've beaten its level
-    if toy.target.won then
-      toy.angle = toy.angle + dt
-      return
-    end
 
     local wasEntered = toy.isEntered
     toy.isEntered = self.controllerInRange(toy.position, self.toySize)
@@ -154,20 +136,6 @@ function mobile:handleToyInput(dt)
       controller:vibrate(.0035)
     end
   end)
-
-  if activeToy and trigger > .9 then
-    self.transitionFactor = math.min(self.transitionFactor + dt, 1)
-
-    if self.transitionFactor > 0 then
-      controller:vibrate(self.transitionFactor^2 * .0035)
-    end
-
-    if self.transitionFactor >= 1 then
-      setState(activeToy.target)
-    end
-  else
-    self.transitionFactor = math.max(self.transitionFactor - dt, 0)
-  end
 
   self.isEntered = activeToy ~= nil
   self.rotateSpeed = _.lerp(self.rotateSpeed, self.isEntered and 0 or .5, 4 * dt)

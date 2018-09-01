@@ -5,8 +5,6 @@ local vec3 = require('cpml').vec3
 rattle.model = lovr.graphics.newModel('art/rattle.obj')
 rattle.model:setMaterial(lovr.graphics.newMaterial('art/rattle_DIFF.png'))
 
-rattle.keyblade = lovr.graphics.newModel('art/keyblade.obj')
-
 function rattle:init()
   self.lastPosition = nil
   self.lastVelocity = nil
@@ -15,9 +13,8 @@ end
 
 function rattle:update(dt)
   local controller = controllers.list[1]
-  local levels = { require('app/cry'), require('app/sleep'), require('app/play') }
 
-  if controller and not _.all(levels, 'won') then
+  if controller then
     local pos = vec3(controller:getPosition())
 
     if self.lastPosition then
@@ -41,18 +38,12 @@ end
 
 function rattle:draw()
   local controller = controllers.list[1]
-  local levels = { require('app/cry'), require('app/sleep'), require('app/play') }
 
   if controller then
     local x, y, z = controller:getPosition()
     local angle, ax, ay, az = controller:getOrientation()
     lovr.graphics.setColor(1, 1, 1)
-    if _.all(levels, 'won') then
-      -- TODO Draw keyblade
-      self.keyblade:draw(x, y, z, .75, angle, ax, ay, az)
-    else
-      self.model:draw(x, y, z, .01 + self.shake * .025, angle, ax, ay, az)
-    end
+    self.model:draw(x, y, z, .01 + self.shake * .025, angle, ax, ay, az)
   end
 end
 
