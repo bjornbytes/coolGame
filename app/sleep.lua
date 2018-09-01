@@ -1,22 +1,23 @@
 local sleep = {}
 local controllers = require('app/controllers')
 local rattle = require('app/rattle')
-local vec3 = require('lib/cpml').vec3
+local vec3 = require('cpml').vec3
 local drawBlock = require('app/block')
 
 sleep.won = false
 
 function sleep:init()
   self.skybox = g.newTexture(
-    'art/skyboxes/stormydays_ft.tga',
-    'art/skyboxes/stormydays_bk.tga',
-    'art/skyboxes/stormydays_up.tga',
-    'art/skyboxes/stormydays_dn.tga',
-    'art/skyboxes/stormydays_rt.tga',
-    'art/skyboxes/stormydays_lf.tga'
+    'art/skyboxes/gg_ft.jpg',
+    'art/skyboxes/gg_bk.jpg',
+    'art/skyboxes/gg_up.jpg',
+    'art/skyboxes/gg_dn.jpg',
+    'art/skyboxes/gg_rt.jpg',
+    'art/skyboxes/gg_lf.jpg'
   )
 
-  self.floor = g.newMesh(lovr.headset.getBoundsGeometry())
+  local w, d = lovr.headset.getBoundsDimensions()
+  self.floor = g.newMesh({{ -w, 0, -d }, { -w, 0, d }, { w, 0, -d }, { w, 0, d }}, 'strip')
 
   self.block = {}
   self.block.maxY = 6

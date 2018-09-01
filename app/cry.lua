@@ -1,8 +1,8 @@
 local cry = {}
 local controllers = require 'app/controllers'
 local rattle = require 'app/rattle'
-local vec3 = require('lib/cpml').vec3
-local quat = require('lib/cpml').quat
+local vec3 = require('cpml').vec3
+local quat = require('cpml').quat
 local drawBlock = require('app/block')
 
 cry.won = false
@@ -17,7 +17,8 @@ function cry:init()
     'art/skyboxes/sea_lf.jpg'
   )
 
-  self.floor = g.newMesh(lovr.headset.getBoundsGeometry())
+  local w, d = lovr.headset.getBoundsDimensions()
+  self.floor = g.newMesh({{ -w, 0, -d }, { -w, 0, d }, { w, 0, -d }, { w, 0, d }}, 'strip')
 
   self.block = {}
   self.block.position = vec3(0, 1, -4)

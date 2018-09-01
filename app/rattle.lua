@@ -1,6 +1,6 @@
 local rattle = {}
 local controllers = require 'app/controllers'
-local vec3 = require('lib/cpml').vec3
+local vec3 = require('cpml').vec3
 
 rattle.model = lovr.graphics.newModel('art/rattle.obj')
 rattle.model:setMaterial(lovr.graphics.newMaterial('art/rattle_DIFF.png'))

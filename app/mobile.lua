@@ -2,8 +2,8 @@ local controllers = require 'app/controllers'
 local cry = require 'app/cry'
 local sleep = require 'app/sleep'
 local play = require 'app/play'
-local vec3 = require('lib/cpml').vec3
-local mat4 = require('lib/cpml').mat4
+local vec3 = require('cpml').vec3
+local mat4 = require('cpml').mat4
 
 local mobile = {}
 

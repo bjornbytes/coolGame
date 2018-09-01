@@ -1,7 +1,7 @@
 local sleep = {}
 local controllers = require('app/controllers')
 local rattle = require('app/rattle')
-local vec3 = require('lib/cpml').vec3
+local vec3 = require('cpml').vec3
 local drawBlock = require('app/block')
 
 sleep.won = false
@@ -16,7 +16,8 @@ function sleep:init()
     'art/skyboxes/bluecloud_lf.jpg'
   )
 
-  self.floor = g.newMesh(lovr.headset.getBoundsGeometry())
+  local w, d = lovr.headset.getBoundsDimensions()
+  self.floor = g.newMesh({{ -w, 0, -d }, { -w, 0, d }, { w, 0, -d }, { w, 0, d }}, 'strip')
 
   self.blocks = {}
   for i = 1, 4 do

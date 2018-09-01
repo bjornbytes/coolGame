@@ -2,7 +2,7 @@ local menu = {}
 local controllers = require 'app/controllers'
 local rattle = require 'app/rattle'
 local mobile = require 'app/mobile'
-local vec3 = require('lib/cpml').vec3
+local vec3 = require('cpml').vec3
 
 function menu:init()
   self.room = lovr.graphics.newModel('art/room.obj')

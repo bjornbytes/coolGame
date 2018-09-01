@@ -1,6 +1,9 @@
 --- A 2 component vector.
 -- @module vec2
 
+local modules = (...):gsub('%.[^%.]+$', '') .. "."
+local vec3    = require(modules .. "vec3")
+local acos    = math.acos
 local atan2   = math.atan2
 local sqrt    = math.sqrt
 local cos     = math.cos
@@ -10,16 +13,16 @@ local vec2_mt = {}
 
 -- Private constructor.
 local function new(x, y)
-	local v  = {}
-	v.x, v.y = x, y
-	return setmetatable(v, vec2_mt)
+	return setmetatable({
+		x = x or 0,
+		y = y or 0
+	}, vec2_mt)
 end
 
 -- Do the check to see if JIT is enabled. If so use the optimized FFI structs.
 local status, ffi
 if type(jit) == "table" and jit.status() then
 	status, ffi = pcall(require, "ffi")
-  status = false
 	if status then
 		ffi.cdef "typedef struct { double x, y;} cpml_vec2;"
 		new = ffi.typeof("cpml_vec2")
@@ -52,17 +55,17 @@ function vec2.new(x, y)
 
 	-- {x, y} or {x=x, y=y}
 	elseif type(x) == "table" then
-		local x, y = x.x or x[1], x.y or x[2]
-		assert(type(x) == "number", "new: Wrong argument type for x (<number> expected)")
-		assert(type(y) == "number", "new: Wrong argument type for y (<number> expected)")
+		local xx, yy = x.x or x[1], x.y or x[2]
+		assert(type(xx) == "number", "new: Wrong argument type for x (<number> expected)")
+		assert(type(yy) == "number", "new: Wrong argument type for y (<number> expected)")
 
-		return new(x, y)
+		return new(xx, yy)
 
 	-- number
 	elseif type(x) == "number" then
 		return new(x, x)
 	else
-		return new(0, 0)
+		return new()
 	end
 end
 
@@ -82,82 +85,78 @@ function vec2.clone(a)
 end
 
 --- Add two vectors.
--- @tparam vec2 out Vector to store the result
--- @tparam vec2 a Left hand operant
--- @tparam vec2 b Right hand operant
+-- @tparam vec2 a Left hand operand
+-- @tparam vec2 b Right hand operand
 -- @treturn vec2 out
-function vec2.add(out, a, b)
-	out.x = a.x + b.x
-	out.y = a.y + b.y
-	return out
+function vec2.add(a, b)
+	return new(
+		a.x + b.x,
+		a.y + b.y
+	)
 end
 
 --- Subtract one vector from another.
--- @tparam vec2 out Vector to store the result
--- @tparam vec2 a Left hand operant
--- @tparam vec2 b Right hand operant
+-- @tparam vec2 a Left hand operand
+-- @tparam vec2 b Right hand operand
 -- @treturn vec2 out
-function vec2.sub(out, a, b)
-	out.x = a.x - b.x
-	out.y = a.y - b.y
-	return out
+function vec2.sub(a, b)
+	return new(
+		a.x - b.x,
+		a.y - b.y
+	)
 end
 
 --- Multiply a vector by another vector.
--- @tparam vec2 out Vector to store the result
--- @tparam vec2 a Left hand operant
--- @tparam vec2 b Right hand operant
+-- @tparam vec2 a Left hand operand
+-- @tparam vec2 b Right hand operand
 -- @treturn vec2 out
-function vec2.mul(out, a, b)
-	out.x = a.x * b.x
-	out.y = a.y * b.y
-	return out
+function vec2.mul(a, b)
+	return new(
+		a.x * b.x,
+		a.y * b.y
+	)
 end
 
 --- Divide a vector by another vector.
--- @tparam vec2 out Vector to store the result
--- @tparam vec2 a Left hand operant
--- @tparam vec2 b Right hand operant
+-- @tparam vec2 a Left hand operand
+-- @tparam vec2 b Right hand operand
 -- @treturn vec2 out
-function vec2.div(out, a, b)
-	out.x = a.x / b.x
-	out.y = a.y / b.y
-	return out
+function vec2.div(a, b)
+	return new(
+		a.x / b.x,
+		a.y / b.y
+	)
 end
 
 --- Get the normal of a vector.
--- @tparam vec2 out Vector to store the result
 -- @tparam vec2 a Vector to normalize
 -- @treturn vec2 out
-function vec2.normalize(out, a)
-	local l = a:len()
-	out.x = a.x / l
-	out.y = a.y / l
-	return out
+function vec2.normalize(a)
+	if a:is_zero() then
+		return new()
+	end
+	return a:scale(1 / a:len())
 end
 
 --- Trim a vector to a given length.
--- @tparam vec2 out Vector to store the result
 -- @tparam vec2 a Vector to be trimmed
 -- @tparam number len Length to trim the vector to
 -- @treturn vec2 out
-function vec2.trim(out, a, len)
-	return out
-		:normalize(a)
-		:scale(out, math.min(a:len(), len))
+function vec2.trim(a, len)
+	return a:normalize():scale(math.min(a:len(), len))
 end
 
 --- Get the cross product of two vectors.
--- @tparam vec2 a Left hand operant
--- @tparam vec2 b Right hand operant
+-- @tparam vec2 a Left hand operand
+-- @tparam vec2 b Right hand operand
 -- @treturn number magnitude
 function vec2.cross(a, b)
 	return a.x * b.y - a.y * b.x
 end
 
 --- Get the dot product of two vectors.
--- @tparam vec2 a Left hand operant
--- @tparam vec2 b Right hand operant
+-- @tparam vec2 a Left hand operand
+-- @tparam vec2 b Right hand operand
 -- @treturn number dot
 function vec2.dot(a, b)
 	return a.x * b.x + a.y * b.y
@@ -178,8 +177,8 @@ function vec2.len2(a)
 end
 
 --- Get the distance between two vectors.
--- @tparam vec2 a Left hand operant
--- @tparam vec2 b Right hand operant
+-- @tparam vec2 a Left hand operand
+-- @tparam vec2 b Right hand operand
 -- @treturn number dist
 function vec2.dist(a, b)
 	local dx = a.x - b.x
@@ -188,8 +187,8 @@ function vec2.dist(a, b)
 end
 
 --- Get the squared distance between two vectors.
--- @tparam vec2 a Left hand operant
--- @tparam vec2 b Right hand operant
+-- @tparam vec2 a Left hand operand
+-- @tparam vec2 b Right hand operand
 -- @treturn number dist
 function vec2.dist2(a, b)
 	local dx = a.x - b.x
@@ -198,37 +197,34 @@ function vec2.dist2(a, b)
 end
 
 --- Scale a vector by a scalar.
--- @tparam vec2 out Vector to store the result
--- @tparam vec2 a Left hand operant
--- @tparam number b Right hand operant
+-- @tparam vec2 a Left hand operand
+-- @tparam number b Right hand operand
 -- @treturn vec2 out
-function vec2.scale(out, a, b)
-	out.x = a.x * b
-	out.y = a.y * b
-	return out
+function vec2.scale(a, b)
+	return new(
+		a.x * b,
+		a.y * b
+	)
 end
 
 --- Rotate a vector.
--- @tparam vec2 out Vector to store the result
 -- @tparam vec2 a Vector to rotate
 -- @tparam number phi Angle to rotate vector by (in radians)
 -- @treturn vec2 out
-function vec2.rotate(out, a, phi)
+function vec2.rotate(a, phi)
 	local c = cos(phi)
 	local s = sin(phi)
-	out.x   = c * a.x - s * a.y
-	out.y   = s * a.x + c * a.y
-	return out
+	return new(
+		c * a.x - s * a.y,
+		s * a.x + c * a.y
+	)
 end
 
 --- Get the perpendicular vector of a vector.
--- @tparam vec2 out Vector to store the result
 -- @tparam vec2 a Vector to get perpendicular axes from
 -- @treturn vec2 out
-function vec2.perpendicular(out, a)
-	out.x = -a.y
-	out.y =  a.x
-	return out
+function vec2.perpendicular(a)
+	return new(-a.y, a.x)
 end
 
 --- Angle from one vector to another.
@@ -250,7 +246,7 @@ end
 function vec2.angle_between(a, b)
 	if b then
 		if vec2.is_vec2(a) then
-			return acos(vec2.dot(a, b) / (vec2.len(a) * vec2.len(b)))
+			return acos(a:dot(b) / (a:len() * b:len()))
 		end
 
 		return acos(vec3.dot(a, b) / (vec3.len(a) * vec3.len(b)))
@@ -260,16 +256,12 @@ function vec2.angle_between(a, b)
 end
 
 --- Lerp between two vectors.
--- @tparam vec2 out Vector to store the result
--- @tparam vec2 a Left hand operant
--- @tparam vec2 b Right hand operant
+-- @tparam vec2 a Left hand operand
+-- @tparam vec2 b Right hand operand
 -- @tparam number s Step value
 -- @treturn vec2 out
-function vec2.lerp(out, a, b, s)
-	return out
-		:sub(b, a)
-		:scale(out, s)
-		:add(out, a)
+function vec2.lerp(a, b, s)
+	return a + (b - a) * s
 end
 
 --- Unpack a vector into individual components.
@@ -279,6 +271,23 @@ end
 function vec2.unpack(a)
 	return a.x, a.y
 end
+
+--- Return the component-wise minimum of two vectors.
+-- @tparam vec2 a Left hand operand
+-- @tparam vec2 b Right hand operand
+-- @treturn vec2 A vector where each component is the lesser value for that component between the two given vectors.
+function vec2.component_min(a, b)
+	return new(math.min(a.x, b.x), math.min(a.y, b.y))
+end
+
+--- Return the component-wise maximum of two vectors.
+-- @tparam vec2 a Left hand operand
+-- @tparam vec2 b Right hand operand
+-- @treturn vec2 A vector where each component is the lesser value for that component between the two given vectors.
+function vec2.component_max(a, b)
+	return new(math.max(a.x, b.x), math.max(a.y, b.y))
+end
+
 
 --- Return a boolean showing if a table is or is not a vec2.
 -- @tparam vec2 a Vector to be tested
@@ -338,41 +347,41 @@ function vec2_mt.__eq(a, b)
 end
 
 function vec2_mt.__add(a, b)
-	assert(vec2.is_vec2(a), "__add: Wrong argument type for left hand operant. (<cpml.vec2> expected)")
-	assert(vec2.is_vec2(b), "__add: Wrong argument type for right hand operant. (<cpml.vec2> expected)")
-	return new():add(a, b)
+	assert(vec2.is_vec2(a), "__add: Wrong argument type for left hand operand. (<cpml.vec2> expected)")
+	assert(vec2.is_vec2(b), "__add: Wrong argument type for right hand operand. (<cpml.vec2> expected)")
+	return a:add(b)
 end
 
 function vec2_mt.__sub(a, b)
-	assert(vec2.is_vec2(a), "__add: Wrong argument type for left hand operant. (<cpml.vec2> expected)")
-	assert(vec2.is_vec2(b), "__add: Wrong argument type for right hand operant. (<cpml.vec2> expected)")
-	return new():sub(a, b)
+	assert(vec2.is_vec2(a), "__add: Wrong argument type for left hand operand. (<cpml.vec2> expected)")
+	assert(vec2.is_vec2(b), "__add: Wrong argument type for right hand operand. (<cpml.vec2> expected)")
+	return a:sub(b)
 end
 
 function vec2_mt.__mul(a, b)
-	assert(vec2.is_vec2(a), "__mul: Wrong argument type for left hand operant. (<cpml.vec2> expected)")
-	assert(vec2.is_vec2(b) or type(b) == "number", "__mul: Wrong argument type for right hand operant. (<cpml.vec2> or <number> expected)")
+	assert(vec2.is_vec2(a), "__mul: Wrong argument type for left hand operand. (<cpml.vec2> expected)")
+	assert(vec2.is_vec2(b) or type(b) == "number", "__mul: Wrong argument type for right hand operand. (<cpml.vec2> or <number> expected)")
 
 	if vec2.is_vec2(b) then
-		return new():mul(a, b)
+		return a:mul(b)
 	end
 
-	return new():scale(a, b)
+	return a:scale(b)
 end
 
 function vec2_mt.__div(a, b)
-	assert(vec2.is_vec2(a), "__div: Wrong argument type for left hand operant. (<cpml.vec2> expected)")
-	assert(vec2.is_vec2(b) or type(b) == "number", "__div: Wrong argument type for right hand operant. (<cpml.vec2> or <number> expected)")
+	assert(vec2.is_vec2(a), "__div: Wrong argument type for left hand operand. (<cpml.vec2> expected)")
+	assert(vec2.is_vec2(b) or type(b) == "number", "__div: Wrong argument type for right hand operand. (<cpml.vec2> or <number> expected)")
 
 	if vec2.is_vec2(b) then
-		return new():div(a, b)
+		return a:div(b)
 	end
 
-	return new():scale(a, 1 / b)
+	return a:scale(1 / b)
 end
 
 if status then
-  ffi.metatype(new, vec2_mt)
+	ffi.metatype(new, vec2_mt)
 end
 
 return setmetatable({}, vec2_mt)

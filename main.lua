@@ -1,4 +1,4 @@
-_ = require 'lib.lume'
+_ = require 'lume'
 g = lovr.graphics
 local cry = require 'app/cry'
 local sleep = require 'app/sleep'
@@ -40,12 +40,6 @@ end
 function drawTransition(factor)
   if factor > 0 then
     g.setColor(1, 1, 1, factor^2)
-    g.push()
-    g.origin()
-    g.translate(0, 0, -1)
-    g.setDepthTest()
-    g.plane('fill', 0, 0, 0, 5, 0, 0, 1)
-    g.setDepthTest('less')
-    g.pop()
+    lovr.graphics.fill()
   end
 end

@@ -1,6 +1,6 @@
 --- double 4x4, 1-based, column major matrices
 -- @module mat4
-local modules   = (...):gsub('%/[^%/]+$', '') .. "/"
+local modules   = (...):gsub('%.[^%.]+$', '') .. "."
 local constants = require(modules .. "constants")
 local vec2      = require(modules .. "vec2")
 local vec3      = require(modules .. "vec3")
@@ -37,8 +37,7 @@ end
 -- Do the check to see if JIT is enabled. If so use the optimized FFI structs.
 local status, ffi, the_type
 if type(jit) == "table" and jit.status() then
-    status, ffi = pcall(require, "ffi")
-    status = false
+   --  status, ffi = pcall(require, "ffi")
     if status then
         ffi.cdef "typedef struct { double _m[16]; } cpml_mat4;"
         new = ffi.typeof("cpml_mat4")
@@ -136,15 +135,9 @@ end
 -- @tparam vec3 up Up direction
 -- @treturn mat4 out
 function mat4.from_direction(direction, up)
-	local forward = vec3():normalize(direction)
-
-	local side = vec3()
-		:cross(forward, up)
-		:normalize(side)
-
-	local new_up = vec3()
-		:cross(side, forward)
-		:normalize(new_up)
+	local forward = vec3.normalize(direction)
+	local side = vec3.cross(forward, up):normalize()
+	local new_up = vec3.cross(side, forward):normalize()
 
 	local out = new()
 	out[1]    = side.x
@@ -328,8 +321,8 @@ end
 
 --- Multiply two matrices.
 -- @tparam mat4 out Matrix to store the result
--- @tparam mat4 a Left hand operant
--- @tparam mat4 b Right hand operant
+-- @tparam mat4 a Left hand operand
+-- @tparam mat4 b Right hand operand
 -- @treturn mat4 out
 function mat4.mul(out, a, b)
 	tm4[1]  = a[1]  * b[1] + a[2]  * b[5] + a[3]  * b[9]  + a[4]  * b[13]
@@ -358,8 +351,8 @@ end
 
 --- Multiply a matrix and a vec4.
 -- @tparam mat4 out Matrix to store the result
--- @tparam mat4 a Left hand operant
--- @tparam table b Right hand operant
+-- @tparam mat4 a Left hand operand
+-- @tparam table b Right hand operand
 -- @treturn mat4 out
 function mat4.mul_vec4(out, a, b)
 	tv4[1] = b[1] * a[1] + b[2] * a[5] + b [3] * a[9]  + b[4] * a[13]
@@ -498,6 +491,34 @@ function mat4.shear(out, a, yx, zx, xy, zy, xz, yz)
 	return out:mul(tmp, a)
 end
 
+--- Reflect a matrix across a plane.
+-- @tparam mat4 Matrix to store the result
+-- @tparam a Matrix to reflect
+-- @tparam vec3 position A point on the plane
+-- @tparam vec3 normal The (normalized!) normal vector of the plane
+function mat4.reflect(out, a, position, normal)
+	local nx, ny, nz = normal:unpack()
+	local d = -position:dot(normal)
+	tmp[1] = 1 - 2 * nx ^ 2
+	tmp[2] = 2 * nx * ny
+	tmp[3] = -2 * nx * nz
+	tmp[4] = 0
+	tmp[5] = -2 * nx * ny
+	tmp[6] = 1 - 2 * ny ^ 2
+	tmp[7] = -2 * ny * nz
+	tmp[8] = 0
+	tmp[9] = -2 * nx * nz
+	tmp[10] = -2 * ny * nz
+	tmp[11] = 1 - 2 * nz ^ 2
+	tmp[12] = 0
+	tmp[13] = -2 * nx * d
+	tmp[14] = -2 * ny * d
+	tmp[15] = -2 * nz * d
+	tmp[16] = 1
+
+	return out:mul(tmp, a)
+end
+
 --- Transform matrix to look at a point.
 -- @tparam mat4 out Matrix to store result
 -- @tparam mat4 a Matrix to transform
@@ -505,31 +526,28 @@ end
 -- @tparam vec3 center Location of object to view
 -- @tparam vec3 up Up direction
 -- @treturn mat4 out
-function mat4.look_at(out, a, eye, center, up)
-	forward:normalize(center - eye)
-	side:cross(forward, up):normalize(side)
-	new_up:cross(side, forward)
+function mat4.look_at(out, a, eye, look_at, up)
+	local z_axis = (eye - look_at):normalize()
+	local x_axis = up:cross(z_axis):normalize()
+	local y_axis = z_axis:cross(x_axis)
+	out[1] = x_axis.x
+	out[2] = y_axis.x
+	out[3] = z_axis.x
+	out[4] = 0
+	out[5] = x_axis.y
+	out[6] = y_axis.y
+	out[7] = z_axis.y
+	out[8] = 0
+	out[9] = x_axis.z
+	out[10] = y_axis.z
+	out[11] = z_axis.z
+	out[12] = 0
+	out[13] = 0
+	out[14] = 0
+	out[15] = 0
+	out[16] = 1
 
-	identity(tmp)
-	tmp[1]  =  side.x
-	tmp[5]  =  side.y
-	tmp[9]  =  side.z
-	tmp[2]  =  new_up.x
-	tmp[6]  =  new_up.y
-	tmp[10] =  new_up.z
-	tmp[3]  = -forward.x
-	tmp[7]  = -forward.y
-	tmp[11] = -forward.z
-	tmp[13] = -side:dot(eye)
-	tmp[14] = -new_up:dot(eye)
-	tmp[15] =  forward:dot(eye)
-	tmp[16] = 1
-
-	for i = 1, 16 do
-		out[i] = tmp[i]
-	end
-
-	return out
+  return out
 end
 
 --- Transpose a matrix.
@@ -819,8 +837,13 @@ function mat4_mt.__eq(a, b)
 end
 
 function mat4_mt.__mul(a, b)
-	assert(mat4.is_mat4(a), "__mul: Wrong argument type for left hand operant. (<cpml.mat4> expected)")
-	assert(mat4.is_mat4(b) or #b == 4, "__mul: Wrong argument type for right hand operant. (<cpml.mat4> or table #4 expected)")
+	assert(mat4.is_mat4(a), "__mul: Wrong argument type for left hand operand. (<cpml.mat4> expected)")
+
+	if vec3.is_vec3(b) then
+		return vec3(mat4.mul_vec4({}, a, { b.x, b.y, b.z, 1 }))
+	end
+
+	assert(mat4.is_mat4(b) or #b == 4, "__mul: Wrong argument type for right hand operand. (<cpml.mat4> or table #4 expected)")
 
 	if mat4.is_mat4(b) then
 		return new():mul(a, b)
